@@ -87,7 +87,7 @@ _decrypt_record: record[325]
 0070: 6e 74 65 6e 74 2d 4c 65 6e 67 74 68 3a 20 31 37   ntent-Length: 17
 0080: 33 0d 0a 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 63   3..Connection: c
 0090: 6c 6f 73 65 0d 0a 0d 0a 3c 68 74 6d 6c 3e 0d 0a   lose....<html>..
-00a0: 3c 68 65 61 64 3e 3c 74 69 74 6c 65 3e 34 30 30   <head>\<title>400
+00a0: 3c 68 65 61 64 3e 3c 74 69 74 6c 65 3e 34 30 30   <head><title>400
 00b0: 20 42 61 64 20 52 65 71 75 65 73 74 3c 2f 74 69    Bad Request</ti
 00c0: 74 6c 65 3e 3c 2f 68 65 61 64 3e 0d 0a 3c 62 6f   tle></head>..<bo
 00d0: 64 79 20 62 67 63 6f 6c 6f 72 3d 22 77 68 69 74   dy bgcolor="whit
