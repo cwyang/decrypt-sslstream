@@ -22,11 +22,12 @@ $(OPENSSL_INC):
 demo: decrypt 
 #	./decrypt samples/rsasnakeoil2.key samples/rsasnakeoil2-client samples/rsasnakeoil2-server
 	./decrypt samples/somin_tmp2k.pem samples/somin180614-client samples/somin180614-server
+#	./decrypt samples/somin_tmp2k.pem samples/somin180620-client samples/somin180620-server
 
 %.o: %c $(DEPS) $(OPENSSL_INC)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-decrypt: main.o memory.o ssl_stub.o
+decrypt: main.o memory.o ssl_stub.o util.o
 	$(CC) -o $@ $^ $(CFLAGS) $(OPENSSL_LIB) -lpthread -ldl
 clean:
 	rm -f *.o decrypt

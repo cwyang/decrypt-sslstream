@@ -106,12 +106,14 @@ typedef struct st_ssl_decrypt_ctx {
 
 void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx);
 void SSL_DECRYPT_CTX_free(SSL_DECRYPT_CTX *pctx);
+int decrypt_pms(SSL_DECRYPT_CTX *pctx) ;
 int decrypt(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
 int decrypt_record(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
+int decrypt_handshake(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
 int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input);
 int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
-int decrypt_pms(SSL_DECRYPT_CTX *pctx) ;
 static int generate_ssl(SSL_DECRYPT_CTX *pctx);
+extern char *hex2buf(const void *vp, int len);
 
 #define INITIAL_INPUT_BUFFER_SIZE 4096
 h2o_buffer_mmap_settings_t buffer_mmap_settings = {
@@ -292,12 +294,12 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
     case TLS_R_APPLICATION_DATA:
         if (READY(pctx->ready)) {
 //            h2o_buffer_consume(_input, 5);
+            mesg("%s[TLS record] application data       len=%u\n", hdr, length);
             rc = decrypt_record(pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
             if (rc < 0) {
                 mesg("%s[TLS record] decrypt record error %d\n", hdr, rc);
                 rc = EINVAL;
             }
-            mesg("%s[TLS record] application data       len=%u\n", hdr, length);
             return rc;
         }
         
@@ -310,9 +312,14 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
         return EAGAIN; 
     case TLS_R_HANDSHAKE:
         if (pctx->peer[dir].state >= TLS_ST_CHANGE_CIPHER_SPEC) {
-            // encrypted handshake
+            // encrypted handshake,
             mesg("%s[TLS record] encrypted handshake    len=%u\n", hdr, length);
-            break;
+            rc = decrypt_handshake(pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
+            if (rc < 0) {
+                mesg("%s[TLS record] decrypt handshake error %d\n", hdr, rc);
+                rc = EINVAL;
+            }
+            return rc;
         }
         
         rc = do_handshake(pctx, dir, &input->bytes[5], length);
@@ -320,7 +327,6 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
             mesg("%s[TLS record] bad handshake record %d\n", hdr, rc);
             rc = EINVAL;
             break;
-
         }
         break;
     case TLS_R_CHANGE_CIPHER_SPEC:
@@ -492,18 +498,23 @@ int decrypt_pms(SSL_DECRYPT_CTX *pctx)
     }
     pctx->pms.len = n;
 
-    mesg("pms decrypted\n");
+    {
+        char *c = hex2buf(p, n);
+        mesg("pms decrypted:\n"); 
+        mesg("%s\n", c);
+        free(c);
+    }
+    
 //    for (i = 0; i < n; i++) mesg("%d: %3d [%c]\n", i + 1, p[i], p[i]);
 
     generate_ssl(pctx);
 }
 
+// handle FINISHED mesg
 int handshake_cb(SSL *ssl) 
 {
-    mesg("%s: Error: SSL(%p) initiates in-session handshake.\n", __FUNCTION__, ssl);
-    
-    ssl->state = SSL_ST_ERR;
-    return (-1);
+    mesg("%s: SSL(%p) received HANDSHAKE record.\n", __FUNCTION__, ssl);
+    return 1;
 }
 
 static int read_bio(BIO *b, char *out, int len)
@@ -519,7 +530,7 @@ static int read_bio(BIO *b, char *out, int len)
         return -1;
     }
 
-    mesg("%s: buf_ptr = %p, buf_len=%zu\n", __FUNCTION__, buf, (buf)->size);
+    mesg("%s: buf_ptr = %p, buf_len=%4zu  |  ", __FUNCTION__, buf, (buf)->size);
     
     if (buf->size < len) {
         len = (int)buf->size;
@@ -527,7 +538,7 @@ static int read_bio(BIO *b, char *out, int len)
     memcpy(out, buf->bytes, len);
     {
         unsigned char *p = out;
-        mesg("%s: %x %x %x ..\n", __FUNCTION__, p[0], p[1], p[2]);
+        mesg("%02x %02x %02x %02x %02x ..\n", p[0], p[1], p[2], p[3], p[4]);
     }
     
     h2o_buffer_consume(&peer->buf, len);
@@ -577,7 +588,7 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
 #else
     uint8_t major = pctx->version & 0xff;
     uint8_t minor = pctx->version >> 8;
-    int rc;
+    int rc = 0, rc2 = 0;
     
     mesg("%s: TLS version %d.%d\n", __FUNCTION__, major, minor);
     
@@ -608,13 +619,14 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
         extern int tls1_generate_master_secret(SSL *s, unsigned char *out,
                                                unsigned char *p, int len);
         extern int tls1_setup_key_block(SSL *s);
+        extern int tls1_change_cipher_state(SSL *s, int which);
         
         /* from s3_enc.c */
         extern int ssl3_generate_master_secret(SSL *s, unsigned char *out,
                                                unsigned char *p, int len);        
         extern int ssl3_setup_key_block(SSL *s);
-        
-        
+        extern int ssl3_change_cipher_state(SSL *s, int which);
+
         ssl_get_new_session(s, 0);
         SSL_SESSION *ss = SSL_get0_session(s);
         ss->cipher = pctx->ssl_cipher;
@@ -627,6 +639,10 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
                                             pctx->pms.buf + 2,
                                             pctx->pms.len);
             rc = tls1_setup_key_block(s);
+            rc2 = tls1_change_cipher_state(s,
+                                           i == 1 ?
+                                           SSL3_CHANGE_CIPHER_CLIENT_READ:
+                                           SSL3_CHANGE_CIPHER_SERVER_READ);
         } else {
             ss->master_key_length =
                 ssl3_generate_master_secret(s,
@@ -634,10 +650,20 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
                                             pctx->pms.buf + 2,
                                             pctx->pms.len);
             rc = ssl3_setup_key_block(s);
+            rc2 = ssl3_change_cipher_state(s,
+                                           i == 1 ?
+                                           SSL3_CHANGE_CIPHER_CLIENT_READ:
+                                           SSL3_CHANGE_CIPHER_SERVER_READ);
         }
-        mesg("%s: master key length = %d\n", __FUNCTION__, ss->master_key_length);
-        if (rc == 0) {
-            mesg("%s: setup_key_block failed\n", __FUNCTION__);
+        {
+            mesg("%s: master key[%d]:\n", __FUNCTION__, ss->master_key_length);
+            char *c = hex2buf(ss->master_key, ss->master_key_length);
+            mesg("%s\n", c);
+            free (c);
+        }
+        
+        if (rc == 0 || rc2 == 0) {
+            mesg("%s: setup_key_block failed (%d, %d)\n", __FUNCTION__, rc, rc2);
             print_ssl_error();
         } else
             mesg("%s: setup_key_block ok\n", __FUNCTION__);        
@@ -649,23 +675,37 @@ error:
 #endif
 }
 
-
-int decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)
+static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls, int type)
 {
     char buf[2048];
     int n;
     
     mesg("%s: buf_ptr = %p, buf_len=%zu\n", __FUNCTION__, *_input, (*_input)->size);
-    // XXX: TODO
-    n = SSL_read(ssl, buf, 2048);
-    mesg("%s: SSL_read() returns %d\n", __FUNCTION__, n);
+
+    switch(type) {
+    case TLS_R_HANDSHAKE:
+        n = ssl->method->ssl_read_bytes(ssl, SSL3_RT_HANDSHAKE, buf, 2048, 0);
+        break;
+    default:
+        n = SSL_read(ssl, buf, 2048);
+        break;
+    }
+    
+    mesg("%s: record[%d]\n", __FUNCTION__, n);
     {
-        for (int i = 0; i <n; i ++) {
-            mesg("%03d: <%c>\n", i, buf[i]);
-        }
-        
+        char *c = hex2buf(buf, n);
+        mesg("%s\n", c);
+        free (c);
     }
     
     return 0;
 }
 
+int decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
+{
+    return _decrypt_record(ssl, _input, len, is_tls, TLS_R_APPLICATION_DATA);
+}
+int decrypt_handshake(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
+{
+    return _decrypt_record(ssl, _input, len, is_tls, TLS_R_HANDSHAKE);
+}
