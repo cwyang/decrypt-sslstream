@@ -1,0 +1,1640 @@
+Wireshark SSL debug log 
+
+Wireshark version: 2.2.6 (Git Rev Unknown from unknown)
+GnuTLS version:    3.4.10
+Libgcrypt version: 1.6.5
+
+KeyID[20]:
+| 50 22 31 b2 15 53 cf ea ac ff 15 95 a8 e0 f3 74 |P"1..S.........t|
+| 4d 3d 51 22                                     |M=Q"            |
+ssl_load_key: swapping p and q parameters and recomputing u
+ssl_init private key file /home/cwyang/git/decrypt-sslstream/samples/somin_tmp2k.pem successfully loaded.
+ssl_init port '39844' filename '/home/cwyang/git/decrypt-sslstream/samples/somin_tmp2k.pem' password(only for p12 file) ''
+association_add ssl.port port 39844 handle 0x5653887a8b50
+KeyID[20]:
+| 50 22 31 b2 15 53 cf ea ac ff 15 95 a8 e0 f3 74 |P"1..S.........t|
+| 4d 3d 51 22                                     |M=Q"            |
+ssl_load_key: swapping p and q parameters and recomputing u
+ssl_init private key file /home/cwyang/git/decrypt-sslstream/samples/somin_tmp2k.pem successfully loaded.
+ssl_init port '4443' filename '/home/cwyang/git/decrypt-sslstream/samples/somin_tmp2k.pem' password(only for p12 file) ''
+association_add ssl.port port 4443 handle 0x5653887a8b50
+
+dissect_ssl enter frame #4 (first time)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 102
+dissect_ssl3_record: content_type 22 Handshake
+Calculating hash with offset 5 97
+decrypt_ssl3_record: app_data len 97, ssl state 0x00
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+decrypt_ssl3_record: no decoder available
+dissect_ssl3_handshake iteration 1 type 1 offset 5 length 93 bytes, remaining 102 
+ssl_dissect_hnd_hello_common found CLIENT RANDOM -> state 0x01
+
+dissect_ssl enter frame #6 (first time)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 820
+ssl_try_set_version found version 0x0303 -> state 0x91
+dissect_ssl3_record: content_type 22 Handshake
+Calculating hash with offset 5 53
+decrypt_ssl3_record: app_data len 53, ssl state 0x91
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+decrypt_ssl3_record: no decoder available
+dissect_ssl3_handshake iteration 1 type 2 offset 5 length 49 bytes, remaining 58 
+ssl_try_set_version found version 0x0303 -> state 0x91
+ssl_dissect_hnd_hello_common found SERVER RANDOM -> state 0x93
+ssl_dissect_hnd_srv_hello found CIPHER 0x0035 TLS_RSA_WITH_AES_256_CBC_SHA -> state 0x97
+  record: offset = 58, reported_length_remaining = 762
+dissect_ssl3_record: content_type 22 Handshake
+Calculating hash with offset 63 748
+decrypt_ssl3_record: app_data len 748, ssl state 0x97
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+decrypt_ssl3_record: no decoder available
+dissect_ssl3_handshake iteration 1 type 11 offset 63 length 744 bytes, remaining 811 
+lookup(KeyID)[20]:
+| 50 22 31 b2 15 53 cf ea ac ff 15 95 a8 e0 f3 74 |P"1..S.........t|
+| 4d 3d 51 22                                     |M=Q"            |
+ssl_find_private_key_by_pubkey: lookup result: 0x5653890ad770
+  record: offset = 811, reported_length_remaining = 9
+dissect_ssl3_record: content_type 22 Handshake
+Calculating hash with offset 816 4
+decrypt_ssl3_record: app_data len 4, ssl state 0x97
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+decrypt_ssl3_record: no decoder available
+dissect_ssl3_handshake iteration 1 type 14 offset 816 length 0 bytes, remaining 820 
+
+dissect_ssl enter frame #8 (first time)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 342
+dissect_ssl3_record: content_type 22 Handshake
+Calculating hash with offset 5 262
+decrypt_ssl3_record: app_data len 262, ssl state 0x297
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+decrypt_ssl3_record: no decoder available
+dissect_ssl3_handshake iteration 1 type 16 offset 5 length 258 bytes, remaining 267 
+ssl_load_keyfile dtls/ssl.keylog_file is not configured!
+ssl_generate_pre_master_secret: found SSL_HND_CLIENT_KEY_EXCHG, state 297
+ssl_restore_master_key can't find pre-master secret by Unencrypted pre-master secret
+pre master encrypted[256]:
+| 90 15 22 78 21 e2 d0 f4 f9 c0 a4 6f 59 ac ea 1b |.."x!......oY...|
+| 83 de 35 74 0d 79 c4 bb 07 1f f7 f5 30 db 61 3b |..5t.y......0.a;|
+| df 1a de e5 48 0e 9e 00 0b c8 83 3e fa bf b8 c7 |....H......>....|
+| c6 d5 40 f8 f8 f7 40 00 85 38 86 a8 f1 af a6 1c |..@...@..8......|
+| bd f9 35 e7 7a 4a 99 5f 43 9a 7a 4d 12 93 a7 46 |..5.zJ._C.zM...F|
+| 26 62 04 ea 5c 8e 2f c8 ba fd 95 fb 52 24 7e 38 |&b..\./.....R$~8|
+| 75 52 f0 b5 3c 3b 3c 6c cf 95 95 28 79 f1 01 fd |uR..<;<l...(y...|
+| d3 21 2c 8b e7 84 4f 78 3b c3 eb a2 ff 64 df a2 |.!,...Ox;....d..|
+| ca 88 3a c0 08 c8 c5 71 0f 9f 7b 98 63 23 4d 94 |..:....q..{.c#M.|
+| c5 5c 1f 9f 6e 71 d7 74 4a b6 df 12 ba 08 4a e1 |.\..nq.tJ.....J.|
+| d9 1d fc 57 42 80 46 af 8f 02 4a 5e 39 ad af d7 |...WB.F...J^9...|
+| 5d 0e 47 41 ba a2 ba cd 87 04 19 3c b0 2f ee d8 |].GA.......<./..|
+| fa 78 f1 b6 a8 76 3e 3f ea 11 9f 12 7b 9b ce 85 |.x...v>?....{...|
+| df 4e c1 29 87 28 ab 0f 41 da 0a af 0a b8 71 2f |.N.).(..A.....q/|
+| a0 f0 4d 70 5f d5 27 89 a5 8b 85 a8 5a 91 00 f8 |..Mp_.'.....Z...|
+| 0b db 5c e2 12 d2 95 28 25 90 c0 5d 6f b8 63 59 |..\....(%..]o.cY|
+ssl_decrypt_pre_master_secret: RSA_private_decrypt
+decrypted_unstrip_pre_master[255]:
+| 02 7c c1 2d 49 33 7f 0c af a6 d2 9b f8 fa d0 d8 |.|.-I3..........|
+| 7a 2b 4a 4b c8 9a 4f 24 e7 56 24 64 1f d7 55 1f |z+JK..O$.V$d..U.|
+| 1b b8 b8 fd f3 99 99 e8 45 62 91 48 7a 5f 7d 4b |........Eb.Hz_}K|
+| 9b d3 72 8d 5b 3e b1 5a 2c 44 e4 c2 e1 3c 5f 3a |..r.[>.Z,D...<_:|
+| 67 d6 f5 01 e5 1c 22 55 20 d9 8a a7 78 ae e6 e3 |g....."U ...x...|
+| c9 95 46 ea 11 42 ac 9c 7e ae 28 0d d4 c7 f5 6f |..F..B..~.(....o|
+| 3a 8b 7a f2 1d 96 67 27 5b 80 60 1f 92 e6 af a1 |:.z...g'[.`.....|
+| 5b af e8 12 98 64 4c cd 2b 0e 34 1b ee 15 95 a2 |[....dL.+.4.....|
+| 7b e9 cd 75 0b a7 06 26 e2 20 2e 19 9f b1 4c 25 |{..u...&. ....L%|
+| 4a 4e 5f 75 61 1c 91 0e 77 30 9d 95 ba 07 83 71 |JN_ua...w0.....q|
+| 7e ea 19 88 a9 3f 63 b7 e7 30 57 5e 47 b6 cb fb |~....?c..0W^G...|
+| 2b 77 82 5c d2 86 ba ef 05 75 e1 d7 a3 12 6f 89 |+w.\.....u....o.|
+| 3f 23 8b 58 a4 44 2a eb 48 5b e0 13 22 d4 00 03 |?#.X.D*.H[.."...|
+| 03 fe c0 a1 be 90 0c bb e1 1c aa bd 08 dc e0 b2 |................|
+| e4 17 29 97 e9 11 61 c5 b3 35 84 4e a3 7a 8d bc |..)...a..5.N.z..|
+| ba 4f 43 51 22 22 46 aa a7 2e 9c 5a 18 a0 51    |.OCQ""F....Z..Q |
+pcry_private_decrypt: stripping 207 bytes, decr_len 255
+pre master secret[48]:
+| 03 03 fe c0 a1 be 90 0c bb e1 1c aa bd 08 dc e0 |................|
+| b2 e4 17 29 97 e9 11 61 c5 b3 35 84 4e a3 7a 8d |...)...a..5.N.z.|
+| bc ba 4f 43 51 22 22 46 aa a7 2e 9c 5a 18 a0 51 |..OCQ""F....Z..Q|
+  record: offset = 267, reported_length_remaining = 75
+dissect_ssl3_record: content_type 20 Change Cipher Spec
+ssl_load_keyfile dtls/ssl.keylog_file is not configured!
+ssl_finalize_decryption state = 0x2D7
+ssl_generate_keyring_material:PRF(pre_master_secret)
+pre master secret[48]:
+| 03 03 fe c0 a1 be 90 0c bb e1 1c aa bd 08 dc e0 |................|
+| b2 e4 17 29 97 e9 11 61 c5 b3 35 84 4e a3 7a 8d |...)...a..5.N.z.|
+| bc ba 4f 43 51 22 22 46 aa a7 2e 9c 5a 18 a0 51 |..OCQ""F....Z..Q|
+client random[32]:
+| f3 83 24 78 8c fa f4 f4 f3 e2 01 5c 87 22 7e 9c |..$x.......\."~.|
+| dc b1 f3 8c a7 ef b6 3b 81 d1 c0 28 40 6b d7 a3 |.......;...(@k..|
+server random[32]:
+| 2f 09 b5 da e9 7b 76 16 40 9d e8 7b a1 c0 0b e5 |/....{v.@..{....|
+| ba 7c 68 ea f7 65 7e eb cf ab da 89 62 36 e8 4d |.|h..e~.....b6.M|
+tls12_prf: tls_hash(hash_alg SHA256 secret_len 48 seed_len 77 )
+tls_hash: hash secret[48]:
+| 03 03 fe c0 a1 be 90 0c bb e1 1c aa bd 08 dc e0 |................|
+| b2 e4 17 29 97 e9 11 61 c5 b3 35 84 4e a3 7a 8d |...)...a..5.N.z.|
+| bc ba 4f 43 51 22 22 46 aa a7 2e 9c 5a 18 a0 51 |..OCQ""F....Z..Q|
+tls_hash: hash seed[77]:
+| 6d 61 73 74 65 72 20 73 65 63 72 65 74 f3 83 24 |master secret..$|
+| 78 8c fa f4 f4 f3 e2 01 5c 87 22 7e 9c dc b1 f3 |x.......\."~....|
+| 8c a7 ef b6 3b 81 d1 c0 28 40 6b d7 a3 2f 09 b5 |....;...(@k../..|
+| da e9 7b 76 16 40 9d e8 7b a1 c0 0b e5 ba 7c 68 |..{v.@..{.....|h|
+| ea f7 65 7e eb cf ab da 89 62 36 e8 4d          |..e~.....b6.M   |
+hash out[48]:
+| 19 ad 40 88 51 27 52 1c 14 22 e4 b7 e9 ad c2 5a |..@.Q'R..".....Z|
+| d6 3e e5 96 90 02 28 23 61 d1 96 e6 7c af 87 a7 |.>....(#a...|...|
+| 33 50 6b 6f b1 73 f9 ed 7e 00 f9 f0 f4 82 18 b6 |3Pko.s..~.......|
+PRF out[48]:
+| 19 ad 40 88 51 27 52 1c 14 22 e4 b7 e9 ad c2 5a |..@.Q'R..".....Z|
+| d6 3e e5 96 90 02 28 23 61 d1 96 e6 7c af 87 a7 |.>....(#a...|...|
+| 33 50 6b 6f b1 73 f9 ed 7e 00 f9 f0 f4 82 18 b6 |3Pko.s..~.......|
+master secret[48]:
+| 19 ad 40 88 51 27 52 1c 14 22 e4 b7 e9 ad c2 5a |..@.Q'R..".....Z|
+| d6 3e e5 96 90 02 28 23 61 d1 96 e6 7c af 87 a7 |.>....(#a...|...|
+| 33 50 6b 6f b1 73 f9 ed 7e 00 f9 f0 f4 82 18 b6 |3Pko.s..~.......|
+ssl_generate_keyring_material sess key generation
+tls12_prf: tls_hash(hash_alg SHA256 secret_len 48 seed_len 77 )
+tls_hash: hash secret[48]:
+| 19 ad 40 88 51 27 52 1c 14 22 e4 b7 e9 ad c2 5a |..@.Q'R..".....Z|
+| d6 3e e5 96 90 02 28 23 61 d1 96 e6 7c af 87 a7 |.>....(#a...|...|
+| 33 50 6b 6f b1 73 f9 ed 7e 00 f9 f0 f4 82 18 b6 |3Pko.s..~.......|
+tls_hash: hash seed[77]:
+| 6b 65 79 20 65 78 70 61 6e 73 69 6f 6e 2f 09 b5 |key expansion/..|
+| da e9 7b 76 16 40 9d e8 7b a1 c0 0b e5 ba 7c 68 |..{v.@..{.....|h|
+| ea f7 65 7e eb cf ab da 89 62 36 e8 4d f3 83 24 |..e~.....b6.M..$|
+| 78 8c fa f4 f4 f3 e2 01 5c 87 22 7e 9c dc b1 f3 |x.......\."~....|
+| 8c a7 ef b6 3b 81 d1 c0 28 40 6b d7 a3          |....;...(@k..   |
+hash out[136]:
+| ce 33 cb 82 24 b0 24 50 1c 6d 48 d5 55 04 a4 ca |.3..$.$P.mH.U...|
+| 9d 9e 02 1f 37 27 7d 56 a3 da 0e 9f c3 15 e9 5f |....7'}V......._|
+| f0 25 27 c9 5b 46 c3 21 2f 9c 25 94 a0 47 03 5c |.%'.[F.!/.%..G.\|
+| ea d4 d5 7a c8 66 b8 e1 9d 65 9d ea ce 9f c4 9e |...z.f...e......|
+| 3d cd 96 ed 2b 9e 8b 9a ff 24 df a6 46 35 7d 25 |=...+....$..F5}%|
+| 2e 1a 32 fe da 0b 6c 4f 6c 29 41 93 2f e7 c4 1f |..2...lOl)A./...|
+| b6 7e 0a cf 8d 93 d6 a1 f2 93 1d b8 00 f8 dd 0b |.~..............|
+| aa 25 f1 70 74 db a1 7b 15 c7 dd 73 83 2e 76 58 |.%.pt..{...s..vX|
+| ae 27 97 71 a8 3b 60 99                         |.'.q.;`.        |
+PRF out[136]:
+| ce 33 cb 82 24 b0 24 50 1c 6d 48 d5 55 04 a4 ca |.3..$.$P.mH.U...|
+| 9d 9e 02 1f 37 27 7d 56 a3 da 0e 9f c3 15 e9 5f |....7'}V......._|
+| f0 25 27 c9 5b 46 c3 21 2f 9c 25 94 a0 47 03 5c |.%'.[F.!/.%..G.\|
+| ea d4 d5 7a c8 66 b8 e1 9d 65 9d ea ce 9f c4 9e |...z.f...e......|
+| 3d cd 96 ed 2b 9e 8b 9a ff 24 df a6 46 35 7d 25 |=...+....$..F5}%|
+| 2e 1a 32 fe da 0b 6c 4f 6c 29 41 93 2f e7 c4 1f |..2...lOl)A./...|
+| b6 7e 0a cf 8d 93 d6 a1 f2 93 1d b8 00 f8 dd 0b |.~..............|
+| aa 25 f1 70 74 db a1 7b 15 c7 dd 73 83 2e 76 58 |.%.pt..{...s..vX|
+| ae 27 97 71 a8 3b 60 99                         |.'.q.;`.        |
+key expansion[136]:
+| ce 33 cb 82 24 b0 24 50 1c 6d 48 d5 55 04 a4 ca |.3..$.$P.mH.U...|
+| 9d 9e 02 1f 37 27 7d 56 a3 da 0e 9f c3 15 e9 5f |....7'}V......._|
+| f0 25 27 c9 5b 46 c3 21 2f 9c 25 94 a0 47 03 5c |.%'.[F.!/.%..G.\|
+| ea d4 d5 7a c8 66 b8 e1 9d 65 9d ea ce 9f c4 9e |...z.f...e......|
+| 3d cd 96 ed 2b 9e 8b 9a ff 24 df a6 46 35 7d 25 |=...+....$..F5}%|
+| 2e 1a 32 fe da 0b 6c 4f 6c 29 41 93 2f e7 c4 1f |..2...lOl)A./...|
+| b6 7e 0a cf 8d 93 d6 a1 f2 93 1d b8 00 f8 dd 0b |.~..............|
+| aa 25 f1 70 74 db a1 7b 15 c7 dd 73 83 2e 76 58 |.%.pt..{...s..vX|
+| ae 27 97 71 a8 3b 60 99                         |.'.q.;`.        |
+Client MAC key[20]:
+| ce 33 cb 82 24 b0 24 50 1c 6d 48 d5 55 04 a4 ca |.3..$.$P.mH.U...|
+| 9d 9e 02 1f                                     |....            |
+Server MAC key[20]:
+| 37 27 7d 56 a3 da 0e 9f c3 15 e9 5f f0 25 27 c9 |7'}V......._.%'.|
+| 5b 46 c3 21                                     |[F.!            |
+Client Write key[32]:
+| 2f 9c 25 94 a0 47 03 5c ea d4 d5 7a c8 66 b8 e1 |/.%..G.\...z.f..|
+| 9d 65 9d ea ce 9f c4 9e 3d cd 96 ed 2b 9e 8b 9a |.e......=...+...|
+Server Write key[32]:
+| ff 24 df a6 46 35 7d 25 2e 1a 32 fe da 0b 6c 4f |.$..F5}%..2...lO|
+| 6c 29 41 93 2f e7 c4 1f b6 7e 0a cf 8d 93 d6 a1 |l)A./....~......|
+Client Write IV[16]:
+| f2 93 1d b8 00 f8 dd 0b aa 25 f1 70 74 db a1 7b |.........%.pt..{|
+Server Write IV[16]:
+| 15 c7 dd 73 83 2e 76 58 ae 27 97 71 a8 3b 60 99 |...s..vX.'.q.;`.|
+ssl_generate_keyring_material ssl_create_decoder(client)
+ssl_create_decoder CIPHER: AES256
+decoder initialized (digest len 20)
+ssl_generate_keyring_material ssl_create_decoder(server)
+ssl_create_decoder CIPHER: AES256
+decoder initialized (digest len 20)
+ssl_generate_keyring_material: client seq 0, server seq 0
+ssl_save_master_key inserted (pre-)master secret for Client Random
+stored key[32]:
+| f3 83 24 78 8c fa f4 f4 f3 e2 01 5c 87 22 7e 9c |..$x.......\."~.|
+| dc b1 f3 8c a7 ef b6 3b 81 d1 c0 28 40 6b d7 a3 |.......;...(@k..|
+stored (pre-)master secret[48]:
+| 19 ad 40 88 51 27 52 1c 14 22 e4 b7 e9 ad c2 5a |..@.Q'R..".....Z|
+| d6 3e e5 96 90 02 28 23 61 d1 96 e6 7c af 87 a7 |.>....(#a...|...|
+| 33 50 6b 6f b1 73 f9 ed 7e 00 f9 f0 f4 82 18 b6 |3Pko.s..~.......|
+ssl_save_master_key: not saving empty Session ID!
+packet_from_server: is from server - FALSE
+ssl_change_cipher CLIENT
+  record: offset = 273, reported_length_remaining = 69
+dissect_ssl3_record: content_type 22 Handshake
+decrypt_ssl3_record: app_data len 64, ssl state 0x2BF
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+ssl_decrypt_record ciphertext len 64
+Ciphertext[64]:
+| a9 c4 74 5e 40 d2 6f 7f a3 77 2a 92 1e 51 08 6d |..t^@.o..w*..Q.m|
+| 0b 2e 80 70 2c 47 79 ba 03 9b a2 a8 dd 80 f9 a1 |...p,Gy.........|
+| 59 0b 3e e5 f8 eb 12 eb bc 2d 41 d4 e9 16 97 28 |Y.>......-A....(|
+| 99 ec 44 65 e5 79 c8 e3 52 23 b6 17 c3 d6 3e 85 |..De.y..R#....>.|
+ssl_decrypt_record: allocating 96 bytes for decrypt data (old len 32)
+Plaintext[48]:
+| 14 00 00 0c e8 f9 e0 82 16 57 0f 98 48 64 31 64 |.........W..Hd1d|
+| c6 bf 77 d7 ad 2f fe c9 45 63 a2 f5 db fe 47 c8 |..w../..Ec....G.|
+| 6d 0e 99 89 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b |m...............|
+ssl_decrypt_record found padding 11 final len 36
+checking mac (len 16, version 303, ct 22 seq 0)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| c6 bf 77 d7 ad 2f fe c9 45 63 a2 f5 db fe 47 c8 |..w../..Ec....G.|
+| 6d 0e 99 89                                     |m...            |
+ssl_decrypt_record: mac ok
+dissect_ssl3_handshake iteration 1 type 20 offset 0 length 12 bytes, remaining 16 
+
+dissect_ssl enter frame #9 (first time)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 266
+dissect_ssl3_record: content_type 22 Handshake
+decrypt_ssl3_record: app_data len 186, ssl state 0x2BF
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+decrypt_ssl3_record: no decoder available
+dissect_ssl3_handshake iteration 1 type 4 offset 5 length 182 bytes, remaining 191 
+ssl_save_master_key inserted (pre-)master secret for Session Ticket
+stored key[176]:
+| e2 c0 78 d7 2f c8 c7 f9 7e ce 9c d1 91 8f fb 4d |..x./...~......M|
+| c9 04 d3 ed e6 4d 60 f0 ee 42 7e 82 ae 27 54 1a |.....M`..B~..'T.|
+| 8a 7c b3 f3 63 37 d3 c7 34 3e 06 98 f8 57 2e 29 |.|..c7..4>...W.)|
+| 3e 28 31 6e f6 ec 73 49 e8 e4 4f 93 9f 72 78 13 |>(1n..sI..O..rx.|
+| 05 2a 3a 60 ea 1a a3 30 44 50 7d 47 29 a4 6e 0f |.*:`...0DP}G).n.|
+| 3b 8d 41 f5 27 d9 b0 65 3f bd f9 cb f4 25 9c 65 |;.A.'..e?....%.e|
+| a4 03 e9 6f 61 ab 44 7e 5b de 76 5f 44 d0 ac eb |...oa.D~[.v_D...|
+| 3a af 67 dd c7 c9 eb cb 10 b2 cc eb cb 2b 9b 67 |:.g..........+.g|
+| 88 e2 ed 22 bf 31 f6 ac 0c c4 de 01 c6 cc b3 82 |...".1..........|
+| 1c b2 14 96 5d d0 28 a3 89 07 ff 04 0c 3c 8b eb |....].(......<..|
+| d8 04 b1 2a dc 22 f2 3c 7b e1 41 ba f5 5f 8d 6c |...*.".<{.A.._.l|
+stored (pre-)master secret[48]:
+| 19 ad 40 88 51 27 52 1c 14 22 e4 b7 e9 ad c2 5a |..@.Q'R..".....Z|
+| d6 3e e5 96 90 02 28 23 61 d1 96 e6 7c af 87 a7 |.>....(#a...|...|
+| 33 50 6b 6f b1 73 f9 ed 7e 00 f9 f0 f4 82 18 b6 |3Pko.s..~.......|
+  record: offset = 191, reported_length_remaining = 75
+dissect_ssl3_record: content_type 20 Change Cipher Spec
+ssl_dissect_change_cipher_spec Not using Session resumption
+ssl_load_keyfile dtls/ssl.keylog_file is not configured!
+ssl_finalize_decryption state = 0x6BF
+  session key already available, nothing to do.
+packet_from_server: is from server - TRUE
+ssl_change_cipher SERVER
+  record: offset = 197, reported_length_remaining = 69
+dissect_ssl3_record: content_type 22 Handshake
+decrypt_ssl3_record: app_data len 64, ssl state 0x6BF
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+ssl_decrypt_record ciphertext len 64
+Ciphertext[64]:
+| 4a 41 7c 65 5b d3 8b e5 88 28 6d ce 5a c0 56 32 |JA|e[....(m.Z.V2|
+| ec 2d be 66 f2 6a bb d7 f6 a5 4a 54 83 2b 96 fc |.-.f.j....JT.+..|
+| 8e 4e c4 27 53 c0 b2 1a bd 3e 6b 53 c4 bb dc e7 |.N.'S....>kS....|
+| aa 73 32 6f c4 b5 65 b1 4b d2 b0 6b b2 88 db 79 |.s2o..e.K..k...y|
+Plaintext[48]:
+| 14 00 00 0c 0b f2 75 96 34 eb e4 5f e5 df 61 52 |......u.4.._..aR|
+| ae 99 b7 dc 64 26 fc 2a 38 51 81 21 8d fe b8 89 |....d&.*8Q.!....|
+| c7 47 33 f4 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b 0b |.G3.............|
+ssl_decrypt_record found padding 11 final len 36
+checking mac (len 16, version 303, ct 22 seq 0)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| ae 99 b7 dc 64 26 fc 2a 38 51 81 21 8d fe b8 89 |....d&.*8Q.!....|
+| c7 47 33 f4                                     |.G3.            |
+ssl_decrypt_record: mac ok
+dissect_ssl3_handshake iteration 1 type 20 offset 0 length 12 bytes, remaining 16 
+
+dissect_ssl enter frame #11 (first time)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 69
+dissect_ssl3_record: content_type 23 Application Data
+decrypt_ssl3_record: app_data len 64, ssl state 0x6BF
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+ssl_decrypt_record ciphertext len 64
+Ciphertext[64]:
+| b0 c6 53 e5 aa 1f c1 44 6b ec 4d 9d 62 9c 51 86 |..S....Dk.M.b.Q.|
+| 37 b4 40 f0 cb 06 55 a9 53 ac c0 fe 76 de 8f e8 |7.@...U.S...v...|
+| ab 93 c7 d2 99 8f e4 99 e7 55 fc 4d 4b a3 f9 de |.........U.MK...|
+| c7 34 a3 3d f2 1a 76 50 6f ac 1e cc 33 45 58 7b |.4.=..vPo...3EX{|
+Plaintext[48]:
+| 47 45 54 20 2f 20 48 54 54 50 2f 31 2e 31 0a 8c |GET / HTTP/1.1..|
+| 2f 70 17 9b d9 1e 7c e4 e2 0e 65 5a 1c d1 63 9c |/p....|...eZ..c.|
+| d1 28 39 0c 0c 0c 0c 0c 0c 0c 0c 0c 0c 0c 0c 0c |.(9.............|
+ssl_decrypt_record found padding 12 final len 35
+checking mac (len 15, version 303, ct 23 seq 1)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| 8c 2f 70 17 9b d9 1e 7c e4 e2 0e 65 5a 1c d1 63 |./p....|...eZ..c|
+| 9c d1 28 39                                     |..(9            |
+ssl_decrypt_record: mac ok
+ssl_add_data_info: new data inserted data_len = 15, seq = 0, nxtseq = 15
+dissect_ssl3_record decrypted len 15
+decrypted app data fragment[15]:
+| 47 45 54 20 2f 20 48 54 54 50 2f 31 2e 31 0a    |GET / HTTP/1.1. |
+process_ssl_payload: no heuristics dissector, falling back to handle 0x5653887a8b50 (http-over-tls)
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - FALSE
+
+dissect_ssl enter frame #13 (first time)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 69
+dissect_ssl3_record: content_type 23 Application Data
+decrypt_ssl3_record: app_data len 64, ssl state 0x6BF
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+ssl_decrypt_record ciphertext len 64
+Ciphertext[64]:
+| c2 da 5f 3c f3 2b f5 ae 42 5b 60 22 b7 0f 46 54 |.._<.+..B[`"..FT|
+| fc 41 1a de 20 0c 62 95 f5 11 cb a2 87 a9 07 7e |.A.. .b........~|
+| e5 a4 50 49 da 57 9f 6a 34 e9 8f d7 9d a0 4d 47 |..PI.W.j4.....MG|
+| a0 e9 76 50 da c7 4c 28 e2 55 9a 16 56 ce 48 b3 |..vP..L(.U..V.H.|
+Plaintext[48]:
+| 48 6f 73 74 3a 20 73 6f 6d 69 6e 0a c6 71 9d 29 |Host: somin..q.)|
+| 3d 46 6a be 20 f3 4a e1 95 1d c5 3a 60 5c 87 76 |=Fj. .J....:`\.v|
+| 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f |................|
+ssl_decrypt_record found padding 15 final len 32
+checking mac (len 12, version 303, ct 23 seq 2)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| c6 71 9d 29 3d 46 6a be 20 f3 4a e1 95 1d c5 3a |.q.)=Fj. .J....:|
+| 60 5c 87 76                                     |`\.v            |
+ssl_decrypt_record: mac ok
+ssl_add_data_info: new data inserted data_len = 12, seq = 15, nxtseq = 27
+dissect_ssl3_record decrypted len 12
+decrypted app data fragment[12]:
+| 48 6f 73 74 3a 20 73 6f 6d 69 6e 0a             |Host: somin.    |
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - FALSE
+
+dissect_ssl enter frame #15 (first time)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 69
+dissect_ssl3_record: content_type 23 Application Data
+decrypt_ssl3_record: app_data len 64, ssl state 0x6BF
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+ssl_decrypt_record ciphertext len 64
+Ciphertext[64]:
+| c5 74 d5 38 17 ed 73 8d 57 00 d9 b0 ce 31 90 7d |.t.8..s.W....1.}|
+| f5 0b 70 90 7b 8e 6b 97 52 55 7c 3b d7 ff 99 a8 |..p.{.k.RU|;....|
+| 67 cf 0e 2b 04 e6 9e 5a 62 20 d9 0c c6 17 9e 5b |g..+...Zb .....[|
+| 94 24 9b 64 d1 b8 b5 4b 6b 2e 85 19 61 bd 80 d6 |.$.d...Kk...a...|
+Plaintext[48]:
+| 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 63 6c 6f 73 |Connection: clos|
+| 65 0a b0 c2 a8 6a e6 a5 a2 47 36 da f3 25 dd 50 |e....j...G6..%.P|
+| be 93 95 91 34 42 09 09 09 09 09 09 09 09 09 09 |....4B..........|
+ssl_decrypt_record found padding 9 final len 38
+checking mac (len 18, version 303, ct 23 seq 3)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| b0 c2 a8 6a e6 a5 a2 47 36 da f3 25 dd 50 be 93 |...j...G6..%.P..|
+| 95 91 34 42                                     |..4B            |
+ssl_decrypt_record: mac ok
+ssl_add_data_info: new data inserted data_len = 18, seq = 27, nxtseq = 45
+dissect_ssl3_record decrypted len 18
+decrypted app data fragment[18]:
+| 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 63 6c 6f 73 |Connection: clos|
+| 65 0a                                           |e.              |
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - FALSE
+
+dissect_ssl enter frame #17 (first time)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 53
+dissect_ssl3_record: content_type 23 Application Data
+decrypt_ssl3_record: app_data len 48, ssl state 0x6BF
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+ssl_decrypt_record ciphertext len 48
+Ciphertext[48]:
+| f5 13 2c 54 88 d0 6c c1 95 4d d9 88 cf c1 a0 de |..,T..l..M......|
+| 45 c3 5f b7 6d 15 c0 d4 41 86 3a d7 41 97 0c 98 |E._.m...A.:.A...|
+| cf 31 07 5f 27 7f 13 20 7f 09 c9 63 3c 67 dd a3 |.1._'.. ...c<g..|
+Plaintext[32]:
+| 0a ca b6 3b 0c fb 94 6a 25 41 5f a1 b3 6c 49 d0 |...;...j%A_..lI.|
+| 92 b4 d2 9e 70 0a 0a 0a 0a 0a 0a 0a 0a 0a 0a 0a |....p...........|
+ssl_decrypt_record found padding 10 final len 21
+checking mac (len 1, version 303, ct 23 seq 4)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| ca b6 3b 0c fb 94 6a 25 41 5f a1 b3 6c 49 d0 92 |..;...j%A_..lI..|
+| b4 d2 9e 70                                     |...p            |
+ssl_decrypt_record: mac ok
+ssl_add_data_info: new data inserted data_len = 1, seq = 45, nxtseq = 46
+dissect_ssl3_record decrypted len 1
+decrypted app data fragment[1]:
+| 0a                                              |.               |
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - FALSE
+
+dissect_ssl enter frame #19 (first time)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 1448
+  need_desegmentation: offset = 0, reported_length_remaining = 1448
+
+dissect_ssl enter frame #21 (first time)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 4053
+dissect_ssl3_record: content_type 23 Application Data
+decrypt_ssl3_record: app_data len 4048, ssl state 0x6BF
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+ssl_decrypt_record ciphertext len 4048
+Ciphertext[4048]:
+| ec 07 dd 02 1d c4 cf 68 45 a1 09 6d ce 43 0e ec |.......hE..m.C..|
+| 15 34 3a ff 67 24 4e ee 29 18 82 74 90 98 c9 43 |.4:.g$N.)..t...C|
+| b3 5c 9f 55 49 77 31 39 19 86 c4 8d aa dd c0 eb |.\.UIw19........|
+| b0 8f 5a ec 81 62 c4 5d a1 4d 9c 18 fe 5a bb 3d |..Z..b.].M...Z.=|
+| 74 1e c4 3a d3 60 e7 ec 94 55 71 44 d3 6b 3e 6f |t..:.`...UqD.k>o|
+| db 6e 6f 1b c6 32 73 17 1b aa 46 5a d7 c4 92 05 |.no..2s...FZ....|
+| 79 79 c1 33 8d aa 12 1e ff 1a 01 3e 74 49 9b 56 |yy.3.......>tI.V|
+| 3a 87 43 ee 15 cc bb c2 be 82 88 d8 60 01 02 b4 |:.C.........`...|
+| 36 24 1b 2f 18 11 6e 00 8b 49 b9 b4 80 b8 8e b8 |6$./..n..I......|
+| 11 4c b3 6a c1 be 57 ec 9f c6 99 00 6e 9f ba 8a |.L.j..W.....n...|
+| a2 ee d4 d9 94 ea ba 66 f3 b5 d1 91 2b a5 df e9 |.......f....+...|
+| a7 81 a7 77 77 17 db 60 47 c3 ea 63 03 31 63 45 |...ww..`G..c.1cE|
+| b2 65 4f d0 82 ba 8d 41 2e f5 d5 c8 e3 f8 da b4 |.eO....A........|
+| 1c f7 e3 88 42 1e ca 65 25 07 48 04 fa ff b2 1a |....B..e%.H.....|
+| 55 d5 c9 a4 4e 7e b6 bf 68 ae 44 df 8b 8c be 25 |U...N~..h.D....%|
+| 88 55 59 cc 46 28 61 2e 65 6b bc ff d9 15 52 88 |.UY.F(a.ek....R.|
+| 72 4a d1 cb d1 4b 37 9f 4c bc 13 ca e9 48 ef 7b |rJ...K7.L....H.{|
+| 6f 03 4a 36 15 32 b7 f4 ab bb f6 45 1e 23 96 70 |o.J6.2.....E.#.p|
+| f5 57 cc 6c 17 2d 56 fa 21 f8 a8 c5 31 63 6f 8f |.W.l.-V.!...1co.|
+| b6 58 e8 85 fa 6e e3 70 21 da 27 7b 48 48 06 6f |.X...n.p!.'{HH.o|
+| b6 98 b5 75 67 15 0d a6 05 3b 55 9e e9 00 2f 73 |...ug....;U.../s|
+| d3 f9 88 0b 77 2b 8b 4d c1 81 b2 59 d6 96 a3 71 |....w+.M...Y...q|
+| ea 92 38 c9 1d 90 39 dd fe cc a5 0b 96 03 48 82 |..8...9.......H.|
+| ae 31 45 22 1a 2d 11 ff 80 22 74 b5 15 d0 d7 04 |.1E".-..."t.....|
+| df a6 3d ea 1a 54 3a ca 5d fe 24 41 d1 b2 b8 6f |..=..T:.].$A...o|
+| fc 32 2a 9b cd 8b 23 2c 05 9d 36 24 bc a5 24 7a |.2*...#,..6$..$z|
+| 3e 0c f5 27 9a b6 dc af b1 84 b5 d5 0f 3a ba ac |>..'.........:..|
+| bf d0 f6 60 13 bf 47 85 6f 2b 13 36 b8 63 7a 73 |...`..G.o+.6.czs|
+| 15 16 6e 35 48 99 49 2b 3b 18 4e dc ca 54 56 a7 |..n5H.I+;.N..TV.|
+| d7 53 92 f3 c6 53 7e 54 a9 10 96 94 36 cc 29 d7 |.S...S~T....6.).|
+| bb 4d b1 9b 27 cd 30 c1 8e 0e e1 e3 8e 66 17 36 |.M..'.0......f.6|
+| 8d fa 51 14 df 5e 62 dd 25 b2 39 2f 94 73 5e f1 |..Q..^b.%.9/.s^.|
+| 23 c6 a4 93 97 38 3d 9a b6 c3 bf 17 22 8f dc 1c |#....8=....."...|
+| ec c4 67 83 67 f5 66 1c 6e 97 a2 76 94 97 6f 5d |..g.g.f.n..v..o]|
+| 3d 0a c7 32 b8 da 47 9f 37 84 9a 13 8c 1b 92 39 |=..2..G.7......9|
+| ce 77 18 04 c0 45 50 3b 4c d6 7b 42 4f c5 e8 64 |.w...EP;L.{BO..d|
+| be 47 e1 26 bf 1f d1 b1 c5 78 67 35 39 32 25 c0 |.G.&.....xg592%.|
+| ed e5 36 eb 97 57 3a 73 07 3c fc 8e af 7a 17 71 |..6..W:s.<...z.q|
+| 20 56 1e 5f 46 59 71 b6 c3 a5 65 50 c8 c8 a6 d9 | V._FYq...eP....|
+| 11 cb d4 93 20 6b 51 e6 9f 5e 4c 79 86 12 39 67 |.... kQ..^Ly..9g|
+| 4c 9e 0b fc 61 58 16 d3 45 d9 d6 87 92 60 62 8c |L...aX..E....`b.|
+| 7f 28 20 20 8a d1 78 3f e0 0d 79 d4 c7 c0 56 ea |.(  ..x?..y...V.|
+| dc 73 a9 1f 71 2a fb d3 f3 bb 00 08 0f 98 fe d5 |.s..q*..........|
+| c7 54 54 4a 3f ac 8c 51 b1 5e 69 3d a8 80 a9 b4 |.TTJ?..Q.^i=....|
+| e1 86 e4 14 4f 9a b0 60 ae 13 71 b2 75 7d 65 07 |....O..`..q.u}e.|
+| 2e c9 d0 fd a2 30 2d 4b 37 06 c0 05 3a 4b 69 f4 |.....0-K7...:Ki.|
+| 5f e7 4f 87 c7 d5 0a 28 e3 18 c7 06 dc bc 4d 85 |_.O....(......M.|
+| 6d e0 15 11 ce a0 b5 0d 53 d2 54 cf 22 b1 79 db |m.......S.T.".y.|
+| 7b d5 21 1c 5c b1 17 7a c0 1a 60 ee db 70 70 49 |{.!.\..z..`..ppI|
+| 79 81 d1 7c 5c 99 d7 ff 65 13 8f 08 8d 97 32 ab |y..|\...e.....2.|
+| 91 d6 dd 14 7f 5a 65 fa 95 0a 90 97 b9 b7 a5 8a |.....Ze.........|
+| 6b 67 3a 4c c8 35 e6 a7 2e da df 19 61 bd ee 3e |kg:L.5......a..>|
+| ca 3d d6 22 7b 3a 27 ba bb 56 7f 91 56 da 31 1b |.=."{:'..V..V.1.|
+| 0e e4 40 c8 18 e8 d2 06 42 f6 56 04 ac 0e fa 5c |..@.....B.V....\|
+| 11 c4 18 62 63 0e 74 6f b7 bf f0 e3 55 f5 44 cf |...bc.to....U.D.|
+| ca 72 c3 07 a0 cf c4 c3 98 62 1e a0 56 16 d0 c0 |.r.......b..V...|
+| 71 ec f7 af 12 49 63 2d 66 fd e8 4a f3 40 0d 83 |q....Ic-f..J.@..|
+| df 8d ca 6b 80 7c af 1a 44 e0 66 a6 d7 4b 99 6b |...k.|..D.f..K.k|
+| 4d 58 2e bc 0a 57 61 ac d2 96 42 dc 2f bd b7 33 |MX...Wa...B./..3|
+| 81 11 3c 01 0a 32 d4 f5 23 37 b9 89 3b d4 e6 a4 |..<..2..#7..;...|
+| b5 d5 1d 5b 29 c2 9f e1 15 b2 64 12 95 46 d4 f3 |...[).....d..F..|
+| c0 0c 80 76 0b e8 00 da 7c fa b0 58 60 3e a5 42 |...v....|..X`>.B|
+| 70 1f 72 2a c0 1f 7c 4f a1 84 76 81 00 d5 56 b7 |p.r*..|O..v...V.|
+| fb ef 41 61 ca 3b 3f c4 dd 98 21 4b 8a fa 73 46 |..Aa.;?...!K..sF|
+| 0c b8 22 fd a4 52 3e 40 0e a6 93 09 28 dc f5 c5 |.."..R>@....(...|
+| 37 83 43 25 c0 fd 6b 7f aa f6 e8 9e aa cb 4c db |7.C%..k.......L.|
+| 59 f6 a5 ab 63 eb e4 bb ee 7a 11 96 fa 0c c6 42 |Y...c....z.....B|
+| ee e7 74 e4 34 6d 75 d3 38 eb b9 09 28 f7 6f 19 |..t.4mu.8...(.o.|
+| e8 fb 32 a3 55 c9 14 37 8e 92 1a f7 c4 45 30 b0 |..2.U..7.....E0.|
+| b7 7d 61 87 f8 ab ee 9c 1b eb a5 5d 4c 59 14 86 |.}a........]LY..|
+| 3b ee 55 58 b5 cd 4f 5f e2 c7 e4 3e b7 0d a1 f8 |;.UX..O_...>....|
+| 20 99 57 e8 77 c3 49 d1 5d aa cf ad b2 78 16 d2 | .W.w.I.]....x..|
+| e6 84 0e a2 b1 cb 7c e2 d6 45 ad a6 82 17 93 b0 |......|..E......|
+| 11 af b9 2c 5d 45 7c 1a 16 43 12 de a6 72 a0 fb |...,]E|..C...r..|
+| 59 a9 5a bf 40 51 2f b1 e4 e0 95 16 07 cd 30 92 |Y.Z.@Q/.......0.|
+| 49 3a 00 4b bf 59 81 74 70 9e 4d 51 9c 87 6d f1 |I:.K.Y.tp.MQ..m.|
+| f0 43 eb fb ca 0c 7b 91 65 08 87 38 86 c6 dd 72 |.C....{.e..8...r|
+| 46 a5 9d 77 9d f4 c2 28 ac 4b ab c9 53 4f d8 a3 |F..w...(.K..SO..|
+| c9 84 c1 38 cf 59 ba 7c 44 72 a6 e9 73 0a 0e 2a |...8.Y.|Dr..s..*|
+| 3b cb 6f aa e8 92 8b 9d 97 5a e1 d4 d8 02 a4 a3 |;.o......Z......|
+| 9d da 8c 6b e6 82 51 86 d8 4f 4c 83 f9 58 5c 0d |...k..Q..OL..X\.|
+| d7 38 80 84 2a 50 13 17 48 30 48 91 50 45 f8 e8 |.8..*P..H0H.PE..|
+| 38 1d 4e 49 93 0f 66 b9 2e fc 0c 85 f9 68 6a fa |8.NI..f......hj.|
+| 40 fd fd aa 55 8d d8 7b 63 6c 6e 9f 96 98 3d 2e |@...U..{cln...=.|
+| 70 9f 52 5f 9e 8c 07 27 f2 00 cc 3b b7 db 2a 15 |p.R_...'...;..*.|
+| 74 e9 4d c8 57 be 76 88 cb 0b 80 0f 4a a3 49 46 |t.M.W.v.....J.IF|
+| 5c 80 b4 9d 0d 4e 34 c3 8a 05 9c 5f 96 82 95 f9 |\....N4...._....|
+| 5b fc 3e 07 ec 9a f7 c3 40 09 a9 81 03 1e c6 7e |[.>.....@......~|
+| 84 2d 9a 38 76 61 ce 5f fc 1d 27 64 dc 1a e5 97 |.-.8va._..'d....|
+| 23 8c 7a c2 7f 64 10 3c 2e c7 df 31 d6 36 7c c6 |#.z..d.<...1.6|.|
+| 52 77 18 0f d4 2b 3d 7c a3 87 f9 1f 67 c7 0f 85 |Rw...+=|....g...|
+| 83 84 d3 fd c7 d1 9b 51 d2 d8 2f 82 34 c9 f4 72 |.......Q../.4..r|
+| f3 bb 99 28 6c 0a b1 98 48 0c 76 b7 6b 6c 7d d4 |...(l...H.v.kl}.|
+| 17 81 ce c6 96 dc 0d 48 a5 74 b3 20 e0 fa f2 45 |.......H.t. ...E|
+| 2c 9b af bc 2b c4 0d af 07 99 f0 7c 28 0b 8a df |,...+......|(...|
+| 97 3a 47 f3 c2 f3 0b f8 5a 70 96 fe 58 4f 33 1d |.:G.....Zp..XO3.|
+| 28 b4 12 eb 4e 06 54 07 8c 3e 23 2b e5 33 24 a5 |(...N.T..>#+.3$.|
+| 0f 1c 31 9c 02 d8 a0 e2 0d 81 e4 60 79 06 19 07 |..1........`y...|
+| bc fe e2 b2 dd 04 92 99 76 ea 1b 7c eb d3 4d f3 |........v..|..M.|
+| 63 51 d3 bf 2f a3 2c f4 ca aa 76 78 7e e2 83 de |cQ../.,...vx~...|
+| db e5 c8 f9 7c 5b f6 20 48 a4 0a 5e ba 0f 4f 96 |....|[. H..^..O.|
+| 3d a6 92 36 87 34 23 04 04 1b ab a8 61 41 50 3e |=..6.4#.....aAP>|
+| 1d d9 a7 f9 34 33 e7 2c c7 a4 39 63 d8 9b f1 a2 |....43.,..9c....|
+| de 46 96 9f d3 65 e0 7d 2d bf b0 15 63 15 20 ae |.F...e.}-...c. .|
+| 1f a0 b2 b8 e3 26 11 dd 8f 11 20 68 47 db 6a 76 |.....&.... hG.jv|
+| 59 f8 91 03 11 27 8b e3 3a 77 ae 47 63 80 cb 63 |Y....'..:w.Gc..c|
+| e6 3a b0 04 a4 12 e3 cb 76 5f cc 99 c2 61 f3 ba |.:......v_...a..|
+| e0 7d 39 92 5a 96 2f 65 cc f4 96 d9 50 76 16 a7 |.}9.Z./e....Pv..|
+| 33 ef 48 f8 72 be db c7 e1 db 12 08 54 8b 5c bb |3.H.r.......T.\.|
+| b8 3c 6d 0f 4e 26 8c 5f 4d c6 f5 d6 4c c9 7f 9b |.<m.N&._M...L...|
+| 63 26 98 6b a4 fd d2 ce 77 9a 4b c7 f3 07 f5 d5 |c&.k....w.K.....|
+| b6 ad 84 78 f1 ec a6 eb 5c 54 52 73 69 90 60 8f |...x....\TRsi.`.|
+| f6 ba b7 33 12 8c 99 cd 27 06 dc be c2 5f c1 09 |...3....'...._..|
+| 8a b5 31 18 3a ea 79 e2 e6 f0 04 c3 ef 82 91 77 |..1.:.y........w|
+| 73 e7 53 a1 ce 10 ca 4e c6 e0 19 0d 23 ae 7c 64 |s.S....N....#.|d|
+| b5 21 7e 98 24 7d 20 4e 89 f9 39 be b6 59 e6 f6 |.!~.$} N..9..Y..|
+| fc 90 e7 37 a3 74 c0 b9 1f 50 75 47 06 4e 2e 07 |...7.t...PuG.N..|
+| 77 71 be 07 a4 91 f1 a4 27 c9 fc 41 05 8f 9a 24 |wq......'..A...$|
+| 30 2d 62 5a a1 1d 2f 5d d1 5a e5 99 ad b1 77 6b |0-bZ../].Z....wk|
+| ce 42 e1 3a 1c d0 77 bc a9 f5 49 74 2f 9c 3b 77 |.B.:..w...It/.;w|
+| 6e 0f 54 2e 59 35 5d 4e dd c3 36 65 7e 77 6f ee |n.T.Y5]N..6e~wo.|
+| f8 8b 52 5c 0e c1 56 37 05 d1 dc 76 dc 86 e3 1a |..R\..V7...v....|
+| 1a 54 2e 82 af f5 c7 3b 81 12 ab 79 92 31 23 0e |.T.....;...y.1#.|
+| 46 6c 11 f5 f6 c2 86 d0 d0 5b e6 68 4c b5 77 6f |Fl.......[.hL.wo|
+| bc 7a df f3 cf 0a 56 97 01 64 45 dd 1a ee 62 36 |.z....V..dE...b6|
+| ce 13 3e 6d 6a b4 56 0e 84 a2 9b 41 18 2b 0a 7e |..>mj.V....A.+.~|
+| b0 a2 ba 2b 8b 45 8d a3 de 2d a0 c7 19 8e d8 0b |...+.E...-......|
+| 6f ac 54 e3 d9 2b 78 6e 4b 0c a4 88 67 27 b1 b6 |o.T..+xnK...g'..|
+| 86 be 26 20 d2 d7 8b bb e7 f3 ac 34 1e ff 9a 68 |..& .......4...h|
+| 4d 49 9c 6a 4f 38 9f be 87 d6 b7 39 c5 14 36 93 |MI.jO8.....9..6.|
+| 49 34 0e 78 9e 95 be 7d e7 3c 86 e6 2d f4 cc 62 |I4.x...}.<..-..b|
+| 79 50 b3 6a 8c fc 29 22 47 40 35 01 3d d9 46 b8 |yP.j..)"G@5.=.F.|
+| fa b8 7f 0a 63 33 58 e0 56 cd c8 83 e1 50 1b fa |....c3X.V....P..|
+| 9e 63 ce 42 dd 28 92 03 ee 5d 29 c3 ce 2e 99 7f |.c.B.(...]).....|
+| 12 4f 54 71 2d bf c3 84 80 08 90 f0 b2 bf 3a 9b |.OTq-.........:.|
+| af 39 a6 b3 52 3f 0f 14 f9 0d b6 c4 af c9 b2 4f |.9..R?.........O|
+| 49 cd e5 f5 4d d0 16 b0 00 d9 79 a7 a0 44 9e df |I...M.....y..D..|
+| f8 0d fe de 8f 75 8e 39 1c 20 3f 26 4f 46 7c a1 |.....u.9. ?&OF|.|
+| 55 d5 e9 47 97 63 6e 6c 32 f4 b3 66 47 08 65 4f |U..G.cnl2..fG.eO|
+| e1 cd 0f 54 c8 38 23 65 94 c7 c5 f2 ea ce 54 d5 |...T.8#e......T.|
+| bf 70 7c 61 ec 3f 6a 89 c8 a5 f9 ca 94 2d b1 af |.p|a.?j......-..|
+| 5d b4 ca 1f 36 6a f9 d2 cb 76 f1 19 1e 6d b8 b9 |]...6j...v...m..|
+| 9f 46 17 f6 47 0f e9 e6 70 6c 9e 6e 96 d1 01 27 |.F..G...pl.n...'|
+| a4 42 d6 7e be 48 3a 18 48 94 8c 5b a2 93 ea c5 |.B.~.H:.H..[....|
+| e5 49 63 43 72 28 87 d4 2e 29 b0 6c 96 6b e3 10 |.IcCr(...).l.k..|
+| 98 ac 6e 7b 2d bf 1f 0a d7 1f 2b 0d 4d ee 16 df |..n{-.....+.M...|
+| 07 ad 7a fb 7d 42 92 5e 69 61 c0 71 6e 13 97 af |..z.}B.^ia.qn...|
+| e3 ec 53 fe b9 0b b7 10 85 dd 86 5b ab 92 8a 4a |..S........[...J|
+| 09 86 98 63 57 45 4c 0d 08 8d 58 2f 9e c9 65 3e |...cWEL...X/..e>|
+| 90 a5 70 49 e6 0d bf 1d e5 04 db 29 4c 52 92 57 |..pI.......)LR.W|
+| 93 09 31 8a 2e 7f ef bc 76 14 f5 38 78 2c fe 15 |..1.....v..8x,..|
+| e1 7f 21 8d cf e2 35 9e 3d f6 89 70 37 34 92 e4 |..!...5.=..p74..|
+| 1f 1c 5f 90 ae 84 d3 fa 8f 33 07 3c 7e dd 17 35 |.._......3.<~..5|
+| ed 5b 79 c4 69 2c 67 5e 16 c3 e2 fe 67 99 6c 22 |.[y.i,g^....g.l"|
+| 58 96 12 05 52 37 b0 d0 f6 6d ea 0f 42 05 04 7a |X...R7...m..B..z|
+| 01 bc 0e f5 a1 7c 65 92 05 9d 8d cc 3d 41 fd b2 |.....|e.....=A..|
+| 6d df 0b c6 c7 2d 1b 7c 00 25 67 47 2f bf cf d0 |m....-.|.%gG/...|
+| 1c 65 21 f2 f8 38 5f 2c 7a c7 41 bc c4 e9 d9 17 |.e!..8_,z.A.....|
+| 0f 64 73 af 90 64 b4 13 04 bf 17 b8 41 1d 1e 66 |.ds..d......A..f|
+| ba 1e 1e 33 ef 66 41 fd 5a 73 70 8e 47 e2 a8 55 |...3.fA.Zsp.G..U|
+| 09 12 b9 f0 12 ee 54 d6 40 ad 36 49 cb 99 b8 bb |......T.@.6I....|
+| 31 ee 62 5b 40 b0 f7 c3 de ca 1f e0 b9 75 68 9f |1.b[@........uh.|
+| 7e 85 2a b8 01 b2 97 74 3d 6d e6 d4 2c 36 02 ba |~.*....t=m..,6..|
+| 3b 5a 71 f1 ce 92 2f 29 86 f2 2e 0c 34 ab fa 2e |;Zq.../)....4...|
+| aa 11 ce d9 6f 01 42 26 a1 21 46 84 6e 74 bc 4a |....o.B&.!F.nt.J|
+| 5b fc 50 16 1e a2 28 7c 67 c3 20 18 d6 e7 dc aa |[.P...(|g. .....|
+| 70 82 82 ab dc 6d 6d 6a 49 a8 15 d9 43 09 34 8d |p....mmjI...C.4.|
+| 41 ba 05 57 da 68 38 b1 b8 be 22 11 ac b7 53 06 |A..W.h8..."...S.|
+| 24 49 ad 29 89 a4 9d 48 c8 a6 5a 2a 54 23 3a 04 |$I.)...H..Z*T#:.|
+| 9c bc 90 79 ce b6 9f 72 ef dc c9 01 00 5a 88 73 |...y...r.....Z.s|
+| 0f fa 01 99 e2 80 72 0f 0d d7 9a f4 28 85 c0 e0 |......r.....(...|
+| 44 76 68 9f ef 2a e3 0c 39 c4 ea 21 be eb 70 e6 |Dvh..*..9..!..p.|
+| fa da c4 6e 10 c0 9a fa 9d d9 a7 94 30 cb 18 ad |...n........0...|
+| da 99 a1 a7 bf c4 33 20 4b d3 63 dc 46 db 17 0d |......3 K.c.F...|
+| ad b1 14 70 0b ae 8b 07 6e d5 f8 76 57 e9 1c 03 |...p....n..vW...|
+| a4 f6 b6 48 c7 f2 c1 4a 67 a0 b5 c5 16 3b d7 c5 |...H...Jg....;..|
+| 96 84 9c e1 00 ad 62 bb 5d 97 5c ad 6f d3 9c 1f |......b.].\.o...|
+| 8e 8c 3b 01 db d5 f2 b5 a8 c0 11 f4 1a 4f 91 a4 |..;..........O..|
+| 50 fb 32 92 37 f9 85 5a 8d 32 5d d6 59 05 fd e8 |P.2.7..Z.2].Y...|
+| fc 4f f2 7a 6d 4c 4b c0 16 89 c4 41 b3 ea 01 15 |.O.zmLK....A....|
+| 81 a2 7e ef 47 89 cc 4d cb c8 21 29 7d 8d ec f8 |..~.G..M..!)}...|
+| ef 98 1e a7 7e b2 6b 59 de 05 84 23 e6 a5 62 6c |....~.kY...#..bl|
+| 25 47 83 4c 56 43 1b c2 79 f9 f9 72 c8 6e cb 17 |%G.LVC..y..r.n..|
+| f0 a0 66 2d 57 42 64 38 c1 42 fa 54 fc cf e7 bc |..f-WBd8.B.T....|
+| 76 83 81 37 a9 6d bc 11 b7 28 89 f5 20 bb 34 03 |v..7.m...(.. .4.|
+| 43 94 3d f9 d2 58 a2 c4 1a b7 b7 3f 8b 51 d8 6a |C.=..X.....?.Q.j|
+| c3 99 5b 44 f8 fd a5 9b 3e 10 85 f9 d1 53 2a 70 |..[D....>....S*p|
+| 1f 34 b4 c4 76 d8 29 a6 4d ae 8b 46 4d ad 39 f7 |.4..v.).M..FM.9.|
+| 55 cc 01 41 0b e1 a8 4f 2f e5 e9 af 9f 0b cc 1d |U..A...O/.......|
+| c8 e9 5e bc 77 36 3d 4f 18 d6 9b 94 9f c1 3e 42 |..^.w6=O......>B|
+| fd f0 33 cd d9 d9 5c 0e 64 39 d6 55 e9 05 11 a5 |..3...\.d9.U....|
+| 3d 6c 79 4f 8a fb 02 5c 5f 43 80 2a 9a 7b 5d 39 |=lyO...\_C.*.{]9|
+| 78 1e 8c 44 eb d6 97 44 e2 21 88 99 93 d9 2b 62 |x..D...D.!....+b|
+| 94 b4 d9 cf 32 d8 0e 70 65 87 98 89 a0 9a f3 23 |....2..pe......#|
+| 07 de d4 2e ed 9b d4 f0 dc 6f 65 52 84 df dd f4 |.........oeR....|
+| c4 26 07 fa da 43 4f 22 4e 3f 3a 9e d5 7e a8 b2 |.&...CO"N?:..~..|
+| f4 bf 43 98 9b fd a2 51 74 71 0b 94 7d d2 14 a7 |..C....Qtq..}...|
+| 7e 89 8f be 81 7b fc f9 ca 7c 81 7c 0c e9 15 c5 |~....{...|.|....|
+| b1 12 4c f2 29 ae 3c 65 9f 88 b1 f1 9b 4d 77 37 |..L.).<e.....Mw7|
+| e2 b3 66 cb 77 ca db 2d 5d d5 ad 8d cd 2c 17 ed |..f.w..-]....,..|
+| 18 dd fc ab d8 f6 10 c1 45 c4 14 9e c4 03 1c 3b |........E......;|
+| 8c d4 42 16 36 fd 8d 5b ff f0 d1 fb 97 83 46 7c |..B.6..[......F||
+| 92 70 25 05 bc a0 07 aa 9d 7b 49 15 32 d4 60 9d |.p%......{I.2.`.|
+| 35 bb 4f 96 ec ce 77 18 12 aa 27 5e 65 ca f6 34 |5.O...w...'^e..4|
+| 74 64 7d 55 3b b3 68 d1 67 02 8b fe 75 a9 a7 ac |td}U;.h.g...u...|
+| 75 2d e0 f7 88 75 0a ef 62 69 ee ba c3 f6 47 57 |u-...u..bi....GW|
+| 3e ec 19 a7 1e 7d 01 d6 a3 61 2b ce c8 3c 7d e2 |>....}...a+..<}.|
+| 8b 5c 8c 8e 6c 5a 26 96 ab c5 d1 3b 6f 5a ea 58 |.\..lZ&....;oZ.X|
+| a8 92 fa c6 56 0c 66 53 98 31 7b 58 94 f3 e0 ea |....V.fS.1{X....|
+| bd 20 bf 90 81 f5 7e a0 60 8c a4 0a 2d 2f e5 89 |. ....~.`...-/..|
+| 6d f2 c8 39 9e 37 16 19 80 ff e0 86 3b 84 01 b9 |m..9.7......;...|
+| 0c 39 c3 b2 a1 22 d1 33 1a c8 ff 5c 26 3b cc c7 |.9...".3...\&;..|
+| 53 76 d1 50 8c a6 d0 b2 5c 25 15 6b 9d 2d a0 c8 |Sv.P....\%.k.-..|
+| 10 2c 52 21 99 34 18 1e e2 a6 11 8a a8 e1 28 72 |.,R!.4........(r|
+| 2f 1c cf f8 95 11 07 5e 7f 76 e5 b1 63 37 f7 53 |/......^.v..c7.S|
+| 97 fc a5 b7 e3 dc 7c 33 4f f7 96 e4 c2 4b 4d 9f |......|3O....KM.|
+| 5b d5 b2 15 b3 26 7d 32 09 d7 07 d6 f5 ab 39 be |[....&}2......9.|
+| 7d 5e 78 19 9d 05 5b 68 ec b0 be cb ed 47 77 71 |}^x...[h.....Gwq|
+| 65 76 ab 63 07 ab a8 5b 61 01 b6 d0 b8 76 98 13 |ev.c...[a....v..|
+| 73 42 6d cb ec eb 47 ff 7b 62 d5 6b e2 0c 36 65 |sBm...G.{b.k..6e|
+| 3d 2f de ad 07 f3 12 03 be 06 b0 fa 89 4b e7 8e |=/...........K..|
+| 4c 8b 1b 3c ee 47 a5 b8 d2 ff e9 7f 67 15 6b 7e |L..<.G......g.k~|
+| 7f e8 46 2d 68 79 f0 eb 40 29 25 2c 91 5b d9 a4 |..F-hy..@)%,.[..|
+| 70 ae 8e e9 7f d6 1a 40 80 2a af 0c 75 1a 14 ff |p......@.*..u...|
+| 64 af cc c8 d3 36 2d 10 17 76 c7 82 c3 f7 fd 13 |d....6-..v......|
+| 82 bb 02 cf c7 57 da 4a 03 3e 8d e4 13 be 41 c8 |.....W.J.>....A.|
+| 29 3b a2 2a 4d 4e 16 9d c7 1e 90 17 82 c3 eb a1 |);.*MN..........|
+| d5 d9 d4 6c 1e 03 c4 fb c7 24 fc 76 69 a5 5d ff |...l.....$.vi.].|
+| 82 95 00 f7 11 e7 18 ec ca 5a c9 3b c6 23 8d 77 |.........Z.;.#.w|
+| 68 42 77 0c 47 07 5e 34 cc 71 aa 50 cc f9 22 ee |hBw.G.^4.q.P..".|
+| ab fe a3 c3 d6 f8 11 7e 4a 19 13 34 07 6f 25 eb |.......~J..4.o%.|
+| c8 28 1a 13 24 ea 36 e5 cf f4 46 33 14 74 72 d4 |.(..$.6...F3.tr.|
+| ef 03 28 ce 5d 8c 38 31 ec da 70 cf ee 63 7f 1b |..(.].81..p..c..|
+| 21 ee bf 7e c8 6c 6d 77 a5 d7 f0 c6 7c 47 47 c1 |!..~.lmw....|GG.|
+| 9a 2e 91 70 64 41 7a 3e 60 25 18 a2 93 e0 3b 0e |...pdAz>`%....;.|
+| 09 8f 28 14 26 a3 18 3b ba db 3a 65 71 ec 46 1e |..(.&..;..:eq.F.|
+| b6 88 cc 12 ca 0a 8b 6d 81 c8 ef 40 64 03 af e2 |.......m...@d...|
+| d8 40 d9 e9 02 b6 66 ad a7 44 b2 9e 8d 41 40 bb |.@....f..D...A@.|
+| 94 fa 64 c6 a1 69 8f 7c 3f 52 1b ab d8 c8 c0 2c |..d..i.|?R.....,|
+| fe de b7 dc 4d ce e3 99 a8 a8 fc 61 5e ff 33 34 |....M......a^.34|
+| db b1 3e 52 5b 84 a1 f2 48 e3 5e a0 45 81 88 14 |..>R[...H.^.E...|
+| a0 76 2b 7c 8f 46 b5 0b 42 e8 2a e8 8b 28 7b 77 |.v+|.F..B.*..({w|
+| 93 a0 ea 04 bf 38 21 38 2c 66 80 c7 97 c1 22 55 |.....8!8,f...."U|
+| 88 fa 7c ff 4b 6e e9 55 c5 8e 94 53 08 ce 31 67 |..|.Kn.U...S..1g|
+| d6 d4 bd 8e 1a 5a d8 9b 86 68 d9 3b d0 47 3b 4f |.....Z...h.;.G;O|
+| 04 68 f1 ce 03 86 c8 a1 05 a4 32 b4 2c f8 74 b7 |.h........2.,.t.|
+| 60 e0 49 17 04 8e 27 57 d2 46 08 81 46 bb 30 f8 |`.I...'W.F..F.0.|
+| 5a 0e de 72 1e 66 da 46 e6 33 76 df 54 6d 2c 12 |Z..r.f.F.3v.Tm,.|
+| d7 ae 81 da 4d 96 6d ef 7c ce 43 6e e3 1e 71 79 |....M.m.|.Cn..qy|
+| fa c7 0a 77 97 c7 da f2 46 d0 af f3 76 4d 3c d1 |...w....F...vM<.|
+| 24 bd 19 f2 45 c6 60 5c d7 bb 01 79 68 9c 9a 7d |$...E.`\...yh..}|
+| 6b 62 5d 98 42 46 31 0d ef 59 8c 0e 21 1d 02 e4 |kb].BF1..Y..!...|
+| c6 58 12 cb 41 65 93 5a 27 b0 10 be f0 2c 95 14 |.X..Ae.Z'....,..|
+ssl_decrypt_record: allocating 4080 bytes for decrypt data (old len 96)
+Plaintext[4032]:
+| 48 54 54 50 2f 31 2e 31 20 32 30 30 20 4f 4b 0d |HTTP/1.1 200 OK.|
+| 0a 53 65 72 76 65 72 3a 20 6e 67 69 6e 78 2f 31 |.Server: nginx/1|
+| 2e 31 32 2e 32 0d 0a 44 61 74 65 3a 20 54 68 75 |.12.2..Date: Thu|
+| 2c 20 31 34 20 4a 75 6e 20 32 30 31 38 20 30 32 |, 14 Jun 2018 02|
+| 3a 30 30 3a 32 37 20 47 4d 54 0d 0a 43 6f 6e 74 |:00:27 GMT..Cont|
+| 65 6e 74 2d 54 79 70 65 3a 20 74 65 78 74 2f 68 |ent-Type: text/h|
+| 74 6d 6c 0d 0a 43 6f 6e 74 65 6e 74 2d 4c 65 6e |tml..Content-Len|
+| 67 74 68 3a 20 33 37 30 30 0d 0a 4c 61 73 74 2d |gth: 3700..Last-|
+| 4d 6f 64 69 66 69 65 64 3a 20 54 75 65 2c 20 30 |Modified: Tue, 0|
+| 36 20 4d 61 72 20 32 30 31 38 20 30 39 3a 32 36 |6 Mar 2018 09:26|
+| 3a 32 31 20 47 4d 54 0d 0a 43 6f 6e 6e 65 63 74 |:21 GMT..Connect|
+| 69 6f 6e 3a 20 63 6c 6f 73 65 0d 0a 45 54 61 67 |ion: close..ETag|
+| 3a 20 22 35 61 39 65 35 65 62 64 2d 65 37 34 22 |: "5a9e5ebd-e74"|
+| 0d 0a 53 74 72 69 63 74 2d 54 72 61 6e 73 70 6f |..Strict-Transpo|
+| 72 74 2d 53 65 63 75 72 69 74 79 3a 20 6d 61 78 |rt-Security: max|
+| 2d 61 67 65 3d 33 31 35 33 36 30 30 30 3b 20 69 |-age=31536000; i|
+| 6e 63 6c 75 64 65 53 75 62 64 6f 6d 61 69 6e 73 |ncludeSubdomains|
+| 3b 20 70 72 65 6c 6f 61 64 0d 0a 41 63 63 65 70 |; preload..Accep|
+| 74 2d 52 61 6e 67 65 73 3a 20 62 79 74 65 73 0d |t-Ranges: bytes.|
+| 0a 0d 0a 3c 21 44 4f 43 54 59 50 45 20 68 74 6d |...<!DOCTYPE htm|
+| 6c 20 50 55 42 4c 49 43 20 22 2d 2f 2f 57 33 43 |l PUBLIC "-//W3C|
+| 2f 2f 44 54 44 20 58 48 54 4d 4c 20 31 2e 31 2f |//DTD XHTML 1.1/|
+| 2f 45 4e 22 20 22 68 74 74 70 3a 2f 2f 77 77 77 |/EN" "http://www|
+| 2e 77 33 2e 6f 72 67 2f 54 52 2f 78 68 74 6d 6c |.w3.org/TR/xhtml|
+| 31 31 2f 44 54 44 2f 78 68 74 6d 6c 31 31 2e 64 |11/DTD/xhtml11.d|
+| 74 64 22 3e 0a 0a 3c 68 74 6d 6c 20 78 6d 6c 6e |td">..<html xmln|
+| 73 3d 22 68 74 74 70 3a 2f 2f 77 77 77 2e 77 33 |s="http://www.w3|
+| 2e 6f 72 67 2f 31 39 39 39 2f 78 68 74 6d 6c 22 |.org/1999/xhtml"|
+| 20 78 6d 6c 3a 6c 61 6e 67 3d 22 65 6e 22 3e 0a | xml:lang="en">.|
+| 20 20 20 20 3c 68 65 61 64 3e 0a 20 20 20 20 20 |    <head>.     |
+| 20 20 20 3c 74 69 74 6c 65 3e 54 65 73 74 20 50 |   <title>Test P|
+| 61 67 65 20 66 6f 72 20 74 68 65 20 4e 67 69 6e |age for the Ngin|
+| 78 20 48 54 54 50 20 53 65 72 76 65 72 20 6f 6e |x HTTP Server on|
+| 20 46 65 64 6f 72 61 3c 2f 74 69 74 6c 65 3e 0a | Fedora</title>.|
+| 20 20 20 20 20 20 20 20 3c 6d 65 74 61 20 68 74 |        <meta ht|
+| 74 70 2d 65 71 75 69 76 3d 22 43 6f 6e 74 65 6e |tp-equiv="Conten|
+| 74 2d 54 79 70 65 22 20 63 6f 6e 74 65 6e 74 3d |t-Type" content=|
+| 22 74 65 78 74 2f 68 74 6d 6c 3b 20 63 68 61 72 |"text/html; char|
+| 73 65 74 3d 55 54 46 2d 38 22 20 2f 3e 0a 20 20 |set=UTF-8" />.  |
+| 20 20 20 20 20 20 3c 73 74 79 6c 65 20 74 79 70 |      <style typ|
+| 65 3d 22 74 65 78 74 2f 63 73 73 22 3e 0a 20 20 |e="text/css">.  |
+| 20 20 20 20 20 20 20 20 20 20 2f 2a 3c 21 5b 43 |          /*<![C|
+| 44 41 54 41 5b 2a 2f 0a 20 20 20 20 20 20 20 20 |DATA[*/.        |
+| 20 20 20 20 62 6f 64 79 20 7b 0a 20 20 20 20 20 |    body {.     |
+| 20 20 20 20 20 20 20 20 20 20 20 62 61 63 6b 67 |           backg|
+| 72 6f 75 6e 64 2d 63 6f 6c 6f 72 3a 20 23 66 66 |round-color: #ff|
+| 66 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |f;.             |
+| 20 20 20 63 6f 6c 6f 72 3a 20 23 30 30 30 3b 0a |   color: #000;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 66 6f 6e 74 2d 73 69 7a 65 3a 20 30 2e 39 65 6d |font-size: 0.9em|
+| 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |;.              |
+| 20 20 66 6f 6e 74 2d 66 61 6d 69 6c 79 3a 20 73 |  font-family: s|
+| 61 6e 73 2d 73 65 72 69 66 2c 68 65 6c 76 65 74 |ans-serif,helvet|
+| 69 63 61 3b 0a 20 20 20 20 20 20 20 20 20 20 20 |ica;.           |
+| 20 20 20 20 20 6d 61 72 67 69 6e 3a 20 30 3b 0a |     margin: 0;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 70 61 64 64 69 6e 67 3a 20 30 3b 0a 20 20 20 20 |padding: 0;.    |
+| 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 |        }.      |
+| 20 20 20 20 20 20 3a 6c 69 6e 6b 20 7b 0a 20 20 |      :link {.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 63 6f |              co|
+| 6c 6f 72 3a 20 23 63 30 30 3b 0a 20 20 20 20 20 |lor: #c00;.     |
+| 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 20 |       }.       |
+| 20 20 20 20 20 3a 76 69 73 69 74 65 64 20 7b 0a |     :visited {.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 63 6f 6c 6f 72 3a 20 23 63 30 30 3b 0a 20 20 20 |color: #c00;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 |         }.     |
+| 20 20 20 20 20 20 20 61 3a 68 6f 76 65 72 20 7b |       a:hover {|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 63 6f 6c 6f 72 3a 20 23 66 35 30 3b 0a 20 20 | color: #f50;.  |
+| 20 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 |          }.    |
+| 20 20 20 20 20 20 20 20 68 31 20 7b 0a 20 20 20 |        h1 {.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 74 65 78 |             tex|
+| 74 2d 61 6c 69 67 6e 3a 20 63 65 6e 74 65 72 3b |t-align: center;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 6d 61 72 67 69 6e 3a 20 30 3b 0a 20 20 20 20 | margin: 0;.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 70 61 64 64 |            padd|
+| 69 6e 67 3a 20 30 2e 36 65 6d 20 32 65 6d 20 30 |ing: 0.6em 2em 0|
+| 2e 34 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 |.4em;.          |
+| 20 20 20 20 20 20 62 61 63 6b 67 72 6f 75 6e 64 |      background|
+| 2d 63 6f 6c 6f 72 3a 20 23 32 39 34 31 37 32 3b |-color: #294172;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 63 6f 6c 6f 72 3a 20 23 66 66 66 3b 0a 20 20 | color: #fff;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 77 65 69 67 68 74 3a 20 6e 6f 72 6d 61 |nt-weight: norma|
+| 6c 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |l;.             |
+| 20 20 20 66 6f 6e 74 2d 73 69 7a 65 3a 20 31 2e |   font-size: 1.|
+| 37 35 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 |75em;.          |
+| 20 20 20 20 20 20 62 6f 72 64 65 72 2d 62 6f 74 |      border-bot|
+| 74 6f 6d 3a 20 32 70 78 20 73 6f 6c 69 64 20 23 |tom: 2px solid #|
+| 30 30 30 3b 0a 20 20 20 20 20 20 20 20 20 20 20 |000;.           |
+| 20 7d 0a 20 20 20 20 20 20 20 20 20 20 20 20 68 | }.            h|
+| 31 20 73 74 72 6f 6e 67 20 7b 0a 20 20 20 20 20 |1 strong {.     |
+| 20 20 20 20 20 20 20 20 20 20 20 66 6f 6e 74 2d |           font-|
+| 77 65 69 67 68 74 3a 20 62 6f 6c 64 3b 0a 20 20 |weight: bold;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 73 69 7a 65 3a 20 31 2e 35 65 6d 3b 0a |nt-size: 1.5em;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a 20 20 |            }.  |
+| 20 20 20 20 20 20 20 20 20 20 68 32 20 7b 0a 20 |          h2 {. |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 74 |               t|
+| 65 78 74 2d 61 6c 69 67 6e 3a 20 63 65 6e 74 65 |ext-align: cente|
+| 72 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |r;.             |
+| 20 20 20 62 61 63 6b 67 72 6f 75 6e 64 2d 63 6f |   background-co|
+| 6c 6f 72 3a 20 23 33 43 36 45 42 34 3b 0a 20 20 |lor: #3C6EB4;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 73 69 7a 65 3a 20 31 2e 31 65 6d 3b 0a |nt-size: 1.1em;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 66 6f 6e 74 2d 77 65 69 67 68 74 3a 20 62 6f 6c |font-weight: bol|
+| 64 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |d;.             |
+| 20 20 20 63 6f 6c 6f 72 3a 20 23 66 66 66 3b 0a |   color: #fff;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 6d 61 72 67 69 6e 3a 20 30 3b 0a 20 20 20 20 20 |margin: 0;.     |
+| 20 20 20 20 20 20 20 20 20 20 20 70 61 64 64 69 |           paddi|
+| 6e 67 3a 20 30 2e 35 65 6d 3b 0a 20 20 20 20 20 |ng: 0.5em;.     |
+| 20 20 20 20 20 20 20 20 20 20 20 62 6f 72 64 65 |           borde|
+| 72 2d 62 6f 74 74 6f 6d 3a 20 32 70 78 20 73 6f |r-bottom: 2px so|
+| 6c 69 64 20 23 32 39 34 31 37 32 3b 0a 20 20 20 |lid #294172;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 |         }.     |
+| 20 20 20 20 20 20 20 68 72 20 7b 0a 20 20 20 20 |       hr {.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 64 69 73 70 |            disp|
+| 6c 61 79 3a 20 6e 6f 6e 65 3b 0a 20 20 20 20 20 |lay: none;.     |
+| 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 20 |       }.       |
+| 20 20 20 20 20 2e 63 6f 6e 74 65 6e 74 20 7b 0a |     .content {.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 70 61 64 64 69 6e 67 3a 20 31 65 6d 20 35 65 6d |padding: 1em 5em|
+| 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a |;.            }.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 2e 61 6c 65 |            .ale|
+| 72 74 20 7b 0a 20 20 20 20 20 20 20 20 20 20 20 |rt {.           |
+| 20 20 20 20 20 62 6f 72 64 65 72 3a 20 32 70 78 |     border: 2px|
+| 20 73 6f 6c 69 64 20 23 30 30 30 3b 0a 20 20 20 | solid #000;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 0a 20 20 20 20 |         }..    |
+| 20 20 20 20 20 20 20 20 69 6d 67 20 7b 0a 20 20 |        img {.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 62 6f |              bo|
+| 72 64 65 72 3a 20 32 70 78 20 73 6f 6c 69 64 20 |rder: 2px solid |
+| 23 66 66 66 3b 0a 20 20 20 20 20 20 20 20 20 20 |#fff;.          |
+| 20 20 20 20 20 20 70 61 64 64 69 6e 67 3a 20 32 |      padding: 2|
+| 70 78 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |px;.            |
+| 20 20 20 20 6d 61 72 67 69 6e 3a 20 32 70 78 3b |    margin: 2px;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a 20 |.            }. |
+| 20 20 20 20 20 20 20 20 20 20 20 61 3a 68 6f 76 |           a:hov|
+| 65 72 20 69 6d 67 20 7b 0a 20 20 20 20 20 20 20 |er img {.       |
+| 20 20 20 20 20 20 20 20 20 62 6f 72 64 65 72 3a |         border:|
+| 20 32 70 78 20 73 6f 6c 69 64 20 23 32 39 34 31 | 2px solid #2941|
+| 37 32 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |72;.            |
+| 7d 0a 20 20 20 20 20 20 20 20 20 20 20 20 2e 6c |}.            .l|
+| 6f 67 6f 73 20 7b 0a 20 20 20 20 20 20 20 20 20 |ogos {.         |
+| 20 20 20 20 20 20 20 6d 61 72 67 69 6e 3a 20 31 |       margin: 1|
+| 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |em;.            |
+| 20 20 20 20 74 65 78 74 2d 61 6c 69 67 6e 3a 20 |    text-align: |
+| 63 65 6e 74 65 72 3b 0a 20 20 20 20 20 20 20 20 |center;.        |
+| 20 20 20 20 7d 0a 20 20 20 20 20 20 20 20 20 20 |    }.          |
+| 20 20 2f 2a 5d 5d 3e 2a 2f 0a 20 20 20 20 20 20 |  /*]]>*/.      |
+| 20 20 3c 2f 73 74 79 6c 65 3e 0a 20 20 20 20 3c |  </style>.    <|
+| 2f 68 65 61 64 3e 0a 0a 20 20 20 20 3c 62 6f 64 |/head>..    <bod|
+| 79 3e 0a 20 20 20 20 20 20 20 20 3c 68 31 3e 57 |y>.        <h1>W|
+| 65 6c 63 6f 6d 65 20 74 6f 20 3c 73 74 72 6f 6e |elcome to <stron|
+| 67 3e 6e 67 69 6e 78 3c 2f 73 74 72 6f 6e 67 3e |g>nginx</strong>|
+| 20 6f 6e 20 46 65 64 6f 72 61 21 3c 2f 68 31 3e | on Fedora!</h1>|
+| 0a 0a 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 |..        <div c|
+| 6c 61 73 73 3d 22 63 6f 6e 74 65 6e 74 22 3e 0a |lass="content">.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 3c 70 3e 54 |            <p>T|
+| 68 69 73 20 70 61 67 65 20 69 73 20 75 73 65 64 |his page is used|
+| 20 74 6f 20 74 65 73 74 20 74 68 65 20 70 72 6f | to test the pro|
+| 70 65 72 20 6f 70 65 72 61 74 69 6f 6e 20 6f 66 |per operation of|
+| 20 74 68 65 0a 20 20 20 20 20 20 20 20 20 20 20 | the.           |
+| 20 3c 73 74 72 6f 6e 67 3e 6e 67 69 6e 78 3c 2f | <strong>nginx</|
+| 73 74 72 6f 6e 67 3e 20 48 54 54 50 20 73 65 72 |strong> HTTP ser|
+| 76 65 72 20 61 66 74 65 72 20 69 74 20 68 61 73 |ver after it has|
+| 20 62 65 65 6e 0a 20 20 20 20 20 20 20 20 20 20 | been.          |
+| 20 20 69 6e 73 74 61 6c 6c 65 64 2e 20 49 66 20 |  installed. If |
+| 79 6f 75 20 63 61 6e 20 72 65 61 64 20 74 68 69 |you can read thi|
+| 73 20 70 61 67 65 2c 20 69 74 20 6d 65 61 6e 73 |s page, it means|
+| 20 74 68 61 74 20 74 68 65 0a 20 20 20 20 20 20 | that the.      |
+| 20 20 20 20 20 20 77 65 62 20 73 65 72 76 65 72 |      web server|
+| 20 69 6e 73 74 61 6c 6c 65 64 20 61 74 20 74 68 | installed at th|
+| 69 73 20 73 69 74 65 20 69 73 20 77 6f 72 6b 69 |is site is worki|
+| 6e 67 0a 20 20 20 20 20 20 20 20 20 20 20 20 70 |ng.            p|
+| 72 6f 70 65 72 6c 79 2e 3c 2f 70 3e 0a 0a 20 20 |roperly.</p>..  |
+| 20 20 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 |          <div c|
+| 6c 61 73 73 3d 22 61 6c 65 72 74 22 3e 0a 20 20 |lass="alert">.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 68 |              <h|
+| 32 3e 57 65 62 73 69 74 65 20 41 64 6d 69 6e 69 |2>Website Admini|
+| 73 74 72 61 74 6f 72 3c 2f 68 32 3e 0a 20 20 20 |strator</h2>.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 64 69 |             <di|
+| 76 20 63 6c 61 73 73 3d 22 63 6f 6e 74 65 6e 74 |v class="content|
+| 22 3e 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |">.             |
+| 20 20 20 20 20 20 20 3c 70 3e 54 68 69 73 20 69 |       <p>This i|
+| 73 20 74 68 65 20 64 65 66 61 75 6c 74 20 3c 74 |s the default <t|
+| 74 3e 69 6e 64 65 78 2e 68 74 6d 6c 3c 2f 74 74 |t>index.html</tt|
+| 3e 20 70 61 67 65 20 74 68 61 74 0a 20 20 20 20 |> page that.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 69 73 20 64 69 73 74 72 69 62 75 74 65 64 20 77 |is distributed w|
+| 69 74 68 20 3c 73 74 72 6f 6e 67 3e 6e 67 69 6e |ith <strong>ngin|
+| 78 3c 2f 73 74 72 6f 6e 67 3e 20 6f 6e 0a 20 20 |x</strong> on.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 46 65 64 6f 72 61 2e 20 20 49 74 20 69 73 |  Fedora.  It is|
+| 20 6c 6f 63 61 74 65 64 20 69 6e 0a 20 20 20 20 | located in.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 3c 74 74 3e 2f 75 73 72 2f 73 68 61 72 65 2f 6e |<tt>/usr/share/n|
+| 67 69 6e 78 2f 68 74 6d 6c 3c 2f 74 74 3e 2e 3c |ginx/html</tt>.<|
+| 2f 70 3e 0a 0a 20 20 20 20 20 20 20 20 20 20 20 |/p>..           |
+| 20 20 20 20 20 20 20 20 20 3c 70 3e 59 6f 75 20 |         <p>You |
+| 73 68 6f 75 6c 64 20 6e 6f 77 20 70 75 74 20 79 |should now put y|
+| 6f 75 72 20 63 6f 6e 74 65 6e 74 20 69 6e 20 61 |our content in a|
+| 20 6c 6f 63 61 74 69 6f 6e 20 6f 66 0a 20 20 20 | location of.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 79 6f 75 72 20 63 68 6f 69 63 65 20 61 6e 64 | your choice and|
+| 20 65 64 69 74 20 74 68 65 20 3c 74 74 3e 72 6f | edit the <tt>ro|
+| 6f 74 3c 2f 74 74 3e 20 63 6f 6e 66 69 67 75 72 |ot</tt> configur|
+| 61 74 69 6f 6e 0a 20 20 20 20 20 20 20 20 20 20 |ation.          |
+| 20 20 20 20 20 20 20 20 20 20 64 69 72 65 63 74 |          direct|
+| 69 76 65 20 69 6e 20 74 68 65 20 3c 73 74 72 6f |ive in the <stro|
+| 6e 67 3e 6e 67 69 6e 78 3c 2f 73 74 72 6f 6e 67 |ng>nginx</strong|
+| 3e 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |>.              |
+| 20 20 20 20 20 20 63 6f 6e 66 69 67 75 72 61 74 |      configurat|
+| 69 6f 6e 20 66 69 6c 65 0a 20 20 20 20 20 20 20 |ion file.       |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 74 74 |             <tt|
+| 3e 2f 65 74 63 2f 6e 67 69 6e 78 2f 6e 67 69 6e |>/etc/nginx/ngin|
+| 78 2e 63 6f 6e 66 3c 2f 74 74 3e 2e 3c 2f 70 3e |x.conf</tt>.</p>|
+| 0a 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |..              |
+| 20 20 3c 2f 64 69 76 3e 0a 20 20 20 20 20 20 20 |  </div>.       |
+| 20 20 20 20 20 3c 2f 64 69 76 3e 0a 0a 20 20 20 |     </div>..   |
+| 20 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 6c |         <div cl|
+| 61 73 73 3d 22 6c 6f 67 6f 73 22 3e 0a 20 20 20 |ass="logos">.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 61 20 |             <a |
+| 68 72 65 66 3d 22 68 74 74 70 3a 2f 2f 6e 67 69 |href="http://ngi|
+| 6e 78 2e 6e 65 74 2f 22 3e 3c 69 6d 67 0a 20 20 |nx.net/"><img.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 73 72 63 3d 22 6e 67 69 6e 78 2d 6c 6f 67 |  src="nginx-log|
+| 6f 2e 70 6e 67 22 20 0a 20 20 20 20 20 20 20 20 |o.png" .        |
+| 20 20 20 20 20 20 20 20 20 20 20 20 61 6c 74 3d |            alt=|
+| 22 5b 20 50 6f 77 65 72 65 64 20 62 79 20 6e 67 |"[ Powered by ng|
+| 69 6e 78 20 5d 22 0a 20 20 20 20 20 20 20 20 20 |inx ]".         |
+| 20 20 20 20 20 20 20 20 20 20 20 77 69 64 74 68 |           width|
+| 3d 22 31 32 31 22 20 68 65 69 67 68 74 3d 22 33 |="121" height="3|
+| 32 22 20 2f 3e 3c 2f 61 3e 0a 0a 20 20 20 20 20 |2" /></a>..     |
+| 20 20 20 20 20 20 20 20 20 20 20 3c 61 20 68 72 |           <a hr|
+| 65 66 3d 22 68 74 74 70 3a 2f 2f 66 65 64 6f 72 |ef="http://fedor|
+| 61 70 72 6f 6a 65 63 74 2e 6f 72 67 2f 22 3e 3c |aproject.org/"><|
+| 69 6d 67 20 0a 20 20 20 20 20 20 20 20 20 20 20 |img .           |
+| 20 20 20 20 20 20 20 20 20 73 72 63 3d 22 70 6f |         src="po|
+| 77 65 72 65 64 62 79 2e 70 6e 67 22 20 0a 20 20 |weredby.png" .  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 61 6c 74 3d 22 5b 20 50 6f 77 65 72 65 64 |  alt="[ Powered|
+| 20 62 79 20 46 65 64 6f 72 61 20 5d 22 20 0a 20 | by Fedora ]" . |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 20 77 69 64 74 68 3d 22 38 38 22 20 68 65 |   width="88" he|
+| 69 67 68 74 3d 22 33 31 22 20 2f 3e 3c 2f 61 3e |ight="31" /></a>|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 3c 2f 64 |.            </d|
+| 69 76 3e 0a 20 20 20 20 20 20 20 20 3c 2f 64 69 |iv>.        </di|
+| 76 3e 0a 20 20 20 20 3c 2f 62 6f 64 79 3e 0a 3c |v>.    </body>.<|
+| 2f 68 74 6d 6c 3e 0a 58 d9 c3 09 58 1a 6c dd 52 |/html>.X...X.l.R|
+| e2 5b f6 59 5f aa 12 cf e2 82 ff 04 04 04 04 04 |.[.Y_...........|
+ssl_decrypt_record found padding 4 final len 4027
+checking mac (len 4007, version 303, ct 23 seq 1)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| 58 d9 c3 09 58 1a 6c dd 52 e2 5b f6 59 5f aa 12 |X...X.l.R.[.Y_..|
+| cf e2 82 ff                                     |....            |
+ssl_decrypt_record: mac ok
+ssl_add_data_info: new data inserted data_len = 4007, seq = 0, nxtseq = 4007
+dissect_ssl3_record decrypted len 4007
+decrypted app data fragment[4007]:
+| 48 54 54 50 2f 31 2e 31 20 32 30 30 20 4f 4b 0d |HTTP/1.1 200 OK.|
+| 0a 53 65 72 76 65 72 3a 20 6e 67 69 6e 78 2f 31 |.Server: nginx/1|
+| 2e 31 32 2e 32 0d 0a 44 61 74 65 3a 20 54 68 75 |.12.2..Date: Thu|
+| 2c 20 31 34 20 4a 75 6e 20 32 30 31 38 20 30 32 |, 14 Jun 2018 02|
+| 3a 30 30 3a 32 37 20 47 4d 54 0d 0a 43 6f 6e 74 |:00:27 GMT..Cont|
+| 65 6e 74 2d 54 79 70 65 3a 20 74 65 78 74 2f 68 |ent-Type: text/h|
+| 74 6d 6c 0d 0a 43 6f 6e 74 65 6e 74 2d 4c 65 6e |tml..Content-Len|
+| 67 74 68 3a 20 33 37 30 30 0d 0a 4c 61 73 74 2d |gth: 3700..Last-|
+| 4d 6f 64 69 66 69 65 64 3a 20 54 75 65 2c 20 30 |Modified: Tue, 0|
+| 36 20 4d 61 72 20 32 30 31 38 20 30 39 3a 32 36 |6 Mar 2018 09:26|
+| 3a 32 31 20 47 4d 54 0d 0a 43 6f 6e 6e 65 63 74 |:21 GMT..Connect|
+| 69 6f 6e 3a 20 63 6c 6f 73 65 0d 0a 45 54 61 67 |ion: close..ETag|
+| 3a 20 22 35 61 39 65 35 65 62 64 2d 65 37 34 22 |: "5a9e5ebd-e74"|
+| 0d 0a 53 74 72 69 63 74 2d 54 72 61 6e 73 70 6f |..Strict-Transpo|
+| 72 74 2d 53 65 63 75 72 69 74 79 3a 20 6d 61 78 |rt-Security: max|
+| 2d 61 67 65 3d 33 31 35 33 36 30 30 30 3b 20 69 |-age=31536000; i|
+| 6e 63 6c 75 64 65 53 75 62 64 6f 6d 61 69 6e 73 |ncludeSubdomains|
+| 3b 20 70 72 65 6c 6f 61 64 0d 0a 41 63 63 65 70 |; preload..Accep|
+| 74 2d 52 61 6e 67 65 73 3a 20 62 79 74 65 73 0d |t-Ranges: bytes.|
+| 0a 0d 0a 3c 21 44 4f 43 54 59 50 45 20 68 74 6d |...<!DOCTYPE htm|
+| 6c 20 50 55 42 4c 49 43 20 22 2d 2f 2f 57 33 43 |l PUBLIC "-//W3C|
+| 2f 2f 44 54 44 20 58 48 54 4d 4c 20 31 2e 31 2f |//DTD XHTML 1.1/|
+| 2f 45 4e 22 20 22 68 74 74 70 3a 2f 2f 77 77 77 |/EN" "http://www|
+| 2e 77 33 2e 6f 72 67 2f 54 52 2f 78 68 74 6d 6c |.w3.org/TR/xhtml|
+| 31 31 2f 44 54 44 2f 78 68 74 6d 6c 31 31 2e 64 |11/DTD/xhtml11.d|
+| 74 64 22 3e 0a 0a 3c 68 74 6d 6c 20 78 6d 6c 6e |td">..<html xmln|
+| 73 3d 22 68 74 74 70 3a 2f 2f 77 77 77 2e 77 33 |s="http://www.w3|
+| 2e 6f 72 67 2f 31 39 39 39 2f 78 68 74 6d 6c 22 |.org/1999/xhtml"|
+| 20 78 6d 6c 3a 6c 61 6e 67 3d 22 65 6e 22 3e 0a | xml:lang="en">.|
+| 20 20 20 20 3c 68 65 61 64 3e 0a 20 20 20 20 20 |    <head>.     |
+| 20 20 20 3c 74 69 74 6c 65 3e 54 65 73 74 20 50 |   <title>Test P|
+| 61 67 65 20 66 6f 72 20 74 68 65 20 4e 67 69 6e |age for the Ngin|
+| 78 20 48 54 54 50 20 53 65 72 76 65 72 20 6f 6e |x HTTP Server on|
+| 20 46 65 64 6f 72 61 3c 2f 74 69 74 6c 65 3e 0a | Fedora</title>.|
+| 20 20 20 20 20 20 20 20 3c 6d 65 74 61 20 68 74 |        <meta ht|
+| 74 70 2d 65 71 75 69 76 3d 22 43 6f 6e 74 65 6e |tp-equiv="Conten|
+| 74 2d 54 79 70 65 22 20 63 6f 6e 74 65 6e 74 3d |t-Type" content=|
+| 22 74 65 78 74 2f 68 74 6d 6c 3b 20 63 68 61 72 |"text/html; char|
+| 73 65 74 3d 55 54 46 2d 38 22 20 2f 3e 0a 20 20 |set=UTF-8" />.  |
+| 20 20 20 20 20 20 3c 73 74 79 6c 65 20 74 79 70 |      <style typ|
+| 65 3d 22 74 65 78 74 2f 63 73 73 22 3e 0a 20 20 |e="text/css">.  |
+| 20 20 20 20 20 20 20 20 20 20 2f 2a 3c 21 5b 43 |          /*<![C|
+| 44 41 54 41 5b 2a 2f 0a 20 20 20 20 20 20 20 20 |DATA[*/.        |
+| 20 20 20 20 62 6f 64 79 20 7b 0a 20 20 20 20 20 |    body {.     |
+| 20 20 20 20 20 20 20 20 20 20 20 62 61 63 6b 67 |           backg|
+| 72 6f 75 6e 64 2d 63 6f 6c 6f 72 3a 20 23 66 66 |round-color: #ff|
+| 66 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |f;.             |
+| 20 20 20 63 6f 6c 6f 72 3a 20 23 30 30 30 3b 0a |   color: #000;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 66 6f 6e 74 2d 73 69 7a 65 3a 20 30 2e 39 65 6d |font-size: 0.9em|
+| 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |;.              |
+| 20 20 66 6f 6e 74 2d 66 61 6d 69 6c 79 3a 20 73 |  font-family: s|
+| 61 6e 73 2d 73 65 72 69 66 2c 68 65 6c 76 65 74 |ans-serif,helvet|
+| 69 63 61 3b 0a 20 20 20 20 20 20 20 20 20 20 20 |ica;.           |
+| 20 20 20 20 20 6d 61 72 67 69 6e 3a 20 30 3b 0a |     margin: 0;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 70 61 64 64 69 6e 67 3a 20 30 3b 0a 20 20 20 20 |padding: 0;.    |
+| 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 |        }.      |
+| 20 20 20 20 20 20 3a 6c 69 6e 6b 20 7b 0a 20 20 |      :link {.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 63 6f |              co|
+| 6c 6f 72 3a 20 23 63 30 30 3b 0a 20 20 20 20 20 |lor: #c00;.     |
+| 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 20 |       }.       |
+| 20 20 20 20 20 3a 76 69 73 69 74 65 64 20 7b 0a |     :visited {.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 63 6f 6c 6f 72 3a 20 23 63 30 30 3b 0a 20 20 20 |color: #c00;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 |         }.     |
+| 20 20 20 20 20 20 20 61 3a 68 6f 76 65 72 20 7b |       a:hover {|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 63 6f 6c 6f 72 3a 20 23 66 35 30 3b 0a 20 20 | color: #f50;.  |
+| 20 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 |          }.    |
+| 20 20 20 20 20 20 20 20 68 31 20 7b 0a 20 20 20 |        h1 {.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 74 65 78 |             tex|
+| 74 2d 61 6c 69 67 6e 3a 20 63 65 6e 74 65 72 3b |t-align: center;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 6d 61 72 67 69 6e 3a 20 30 3b 0a 20 20 20 20 | margin: 0;.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 70 61 64 64 |            padd|
+| 69 6e 67 3a 20 30 2e 36 65 6d 20 32 65 6d 20 30 |ing: 0.6em 2em 0|
+| 2e 34 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 |.4em;.          |
+| 20 20 20 20 20 20 62 61 63 6b 67 72 6f 75 6e 64 |      background|
+| 2d 63 6f 6c 6f 72 3a 20 23 32 39 34 31 37 32 3b |-color: #294172;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 63 6f 6c 6f 72 3a 20 23 66 66 66 3b 0a 20 20 | color: #fff;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 77 65 69 67 68 74 3a 20 6e 6f 72 6d 61 |nt-weight: norma|
+| 6c 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |l;.             |
+| 20 20 20 66 6f 6e 74 2d 73 69 7a 65 3a 20 31 2e |   font-size: 1.|
+| 37 35 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 |75em;.          |
+| 20 20 20 20 20 20 62 6f 72 64 65 72 2d 62 6f 74 |      border-bot|
+| 74 6f 6d 3a 20 32 70 78 20 73 6f 6c 69 64 20 23 |tom: 2px solid #|
+| 30 30 30 3b 0a 20 20 20 20 20 20 20 20 20 20 20 |000;.           |
+| 20 7d 0a 20 20 20 20 20 20 20 20 20 20 20 20 68 | }.            h|
+| 31 20 73 74 72 6f 6e 67 20 7b 0a 20 20 20 20 20 |1 strong {.     |
+| 20 20 20 20 20 20 20 20 20 20 20 66 6f 6e 74 2d |           font-|
+| 77 65 69 67 68 74 3a 20 62 6f 6c 64 3b 0a 20 20 |weight: bold;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 73 69 7a 65 3a 20 31 2e 35 65 6d 3b 0a |nt-size: 1.5em;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a 20 20 |            }.  |
+| 20 20 20 20 20 20 20 20 20 20 68 32 20 7b 0a 20 |          h2 {. |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 74 |               t|
+| 65 78 74 2d 61 6c 69 67 6e 3a 20 63 65 6e 74 65 |ext-align: cente|
+| 72 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |r;.             |
+| 20 20 20 62 61 63 6b 67 72 6f 75 6e 64 2d 63 6f |   background-co|
+| 6c 6f 72 3a 20 23 33 43 36 45 42 34 3b 0a 20 20 |lor: #3C6EB4;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 73 69 7a 65 3a 20 31 2e 31 65 6d 3b 0a |nt-size: 1.1em;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 66 6f 6e 74 2d 77 65 69 67 68 74 3a 20 62 6f 6c |font-weight: bol|
+| 64 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |d;.             |
+| 20 20 20 63 6f 6c 6f 72 3a 20 23 66 66 66 3b 0a |   color: #fff;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 6d 61 72 67 69 6e 3a 20 30 3b 0a 20 20 20 20 20 |margin: 0;.     |
+| 20 20 20 20 20 20 20 20 20 20 20 70 61 64 64 69 |           paddi|
+| 6e 67 3a 20 30 2e 35 65 6d 3b 0a 20 20 20 20 20 |ng: 0.5em;.     |
+| 20 20 20 20 20 20 20 20 20 20 20 62 6f 72 64 65 |           borde|
+| 72 2d 62 6f 74 74 6f 6d 3a 20 32 70 78 20 73 6f |r-bottom: 2px so|
+| 6c 69 64 20 23 32 39 34 31 37 32 3b 0a 20 20 20 |lid #294172;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 |         }.     |
+| 20 20 20 20 20 20 20 68 72 20 7b 0a 20 20 20 20 |       hr {.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 64 69 73 70 |            disp|
+| 6c 61 79 3a 20 6e 6f 6e 65 3b 0a 20 20 20 20 20 |lay: none;.     |
+| 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 20 |       }.       |
+| 20 20 20 20 20 2e 63 6f 6e 74 65 6e 74 20 7b 0a |     .content {.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 70 61 64 64 69 6e 67 3a 20 31 65 6d 20 35 65 6d |padding: 1em 5em|
+| 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a |;.            }.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 2e 61 6c 65 |            .ale|
+| 72 74 20 7b 0a 20 20 20 20 20 20 20 20 20 20 20 |rt {.           |
+| 20 20 20 20 20 62 6f 72 64 65 72 3a 20 32 70 78 |     border: 2px|
+| 20 73 6f 6c 69 64 20 23 30 30 30 3b 0a 20 20 20 | solid #000;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 0a 20 20 20 20 |         }..    |
+| 20 20 20 20 20 20 20 20 69 6d 67 20 7b 0a 20 20 |        img {.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 62 6f |              bo|
+| 72 64 65 72 3a 20 32 70 78 20 73 6f 6c 69 64 20 |rder: 2px solid |
+| 23 66 66 66 3b 0a 20 20 20 20 20 20 20 20 20 20 |#fff;.          |
+| 20 20 20 20 20 20 70 61 64 64 69 6e 67 3a 20 32 |      padding: 2|
+| 70 78 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |px;.            |
+| 20 20 20 20 6d 61 72 67 69 6e 3a 20 32 70 78 3b |    margin: 2px;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a 20 |.            }. |
+| 20 20 20 20 20 20 20 20 20 20 20 61 3a 68 6f 76 |           a:hov|
+| 65 72 20 69 6d 67 20 7b 0a 20 20 20 20 20 20 20 |er img {.       |
+| 20 20 20 20 20 20 20 20 20 62 6f 72 64 65 72 3a |         border:|
+| 20 32 70 78 20 73 6f 6c 69 64 20 23 32 39 34 31 | 2px solid #2941|
+| 37 32 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |72;.            |
+| 7d 0a 20 20 20 20 20 20 20 20 20 20 20 20 2e 6c |}.            .l|
+| 6f 67 6f 73 20 7b 0a 20 20 20 20 20 20 20 20 20 |ogos {.         |
+| 20 20 20 20 20 20 20 6d 61 72 67 69 6e 3a 20 31 |       margin: 1|
+| 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |em;.            |
+| 20 20 20 20 74 65 78 74 2d 61 6c 69 67 6e 3a 20 |    text-align: |
+| 63 65 6e 74 65 72 3b 0a 20 20 20 20 20 20 20 20 |center;.        |
+| 20 20 20 20 7d 0a 20 20 20 20 20 20 20 20 20 20 |    }.          |
+| 20 20 2f 2a 5d 5d 3e 2a 2f 0a 20 20 20 20 20 20 |  /*]]>*/.      |
+| 20 20 3c 2f 73 74 79 6c 65 3e 0a 20 20 20 20 3c |  </style>.    <|
+| 2f 68 65 61 64 3e 0a 0a 20 20 20 20 3c 62 6f 64 |/head>..    <bod|
+| 79 3e 0a 20 20 20 20 20 20 20 20 3c 68 31 3e 57 |y>.        <h1>W|
+| 65 6c 63 6f 6d 65 20 74 6f 20 3c 73 74 72 6f 6e |elcome to <stron|
+| 67 3e 6e 67 69 6e 78 3c 2f 73 74 72 6f 6e 67 3e |g>nginx</strong>|
+| 20 6f 6e 20 46 65 64 6f 72 61 21 3c 2f 68 31 3e | on Fedora!</h1>|
+| 0a 0a 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 |..        <div c|
+| 6c 61 73 73 3d 22 63 6f 6e 74 65 6e 74 22 3e 0a |lass="content">.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 3c 70 3e 54 |            <p>T|
+| 68 69 73 20 70 61 67 65 20 69 73 20 75 73 65 64 |his page is used|
+| 20 74 6f 20 74 65 73 74 20 74 68 65 20 70 72 6f | to test the pro|
+| 70 65 72 20 6f 70 65 72 61 74 69 6f 6e 20 6f 66 |per operation of|
+| 20 74 68 65 0a 20 20 20 20 20 20 20 20 20 20 20 | the.           |
+| 20 3c 73 74 72 6f 6e 67 3e 6e 67 69 6e 78 3c 2f | <strong>nginx</|
+| 73 74 72 6f 6e 67 3e 20 48 54 54 50 20 73 65 72 |strong> HTTP ser|
+| 76 65 72 20 61 66 74 65 72 20 69 74 20 68 61 73 |ver after it has|
+| 20 62 65 65 6e 0a 20 20 20 20 20 20 20 20 20 20 | been.          |
+| 20 20 69 6e 73 74 61 6c 6c 65 64 2e 20 49 66 20 |  installed. If |
+| 79 6f 75 20 63 61 6e 20 72 65 61 64 20 74 68 69 |you can read thi|
+| 73 20 70 61 67 65 2c 20 69 74 20 6d 65 61 6e 73 |s page, it means|
+| 20 74 68 61 74 20 74 68 65 0a 20 20 20 20 20 20 | that the.      |
+| 20 20 20 20 20 20 77 65 62 20 73 65 72 76 65 72 |      web server|
+| 20 69 6e 73 74 61 6c 6c 65 64 20 61 74 20 74 68 | installed at th|
+| 69 73 20 73 69 74 65 20 69 73 20 77 6f 72 6b 69 |is site is worki|
+| 6e 67 0a 20 20 20 20 20 20 20 20 20 20 20 20 70 |ng.            p|
+| 72 6f 70 65 72 6c 79 2e 3c 2f 70 3e 0a 0a 20 20 |roperly.</p>..  |
+| 20 20 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 |          <div c|
+| 6c 61 73 73 3d 22 61 6c 65 72 74 22 3e 0a 20 20 |lass="alert">.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 68 |              <h|
+| 32 3e 57 65 62 73 69 74 65 20 41 64 6d 69 6e 69 |2>Website Admini|
+| 73 74 72 61 74 6f 72 3c 2f 68 32 3e 0a 20 20 20 |strator</h2>.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 64 69 |             <di|
+| 76 20 63 6c 61 73 73 3d 22 63 6f 6e 74 65 6e 74 |v class="content|
+| 22 3e 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |">.             |
+| 20 20 20 20 20 20 20 3c 70 3e 54 68 69 73 20 69 |       <p>This i|
+| 73 20 74 68 65 20 64 65 66 61 75 6c 74 20 3c 74 |s the default <t|
+| 74 3e 69 6e 64 65 78 2e 68 74 6d 6c 3c 2f 74 74 |t>index.html</tt|
+| 3e 20 70 61 67 65 20 74 68 61 74 0a 20 20 20 20 |> page that.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 69 73 20 64 69 73 74 72 69 62 75 74 65 64 20 77 |is distributed w|
+| 69 74 68 20 3c 73 74 72 6f 6e 67 3e 6e 67 69 6e |ith <strong>ngin|
+| 78 3c 2f 73 74 72 6f 6e 67 3e 20 6f 6e 0a 20 20 |x</strong> on.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 46 65 64 6f 72 61 2e 20 20 49 74 20 69 73 |  Fedora.  It is|
+| 20 6c 6f 63 61 74 65 64 20 69 6e 0a 20 20 20 20 | located in.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 3c 74 74 3e 2f 75 73 72 2f 73 68 61 72 65 2f 6e |<tt>/usr/share/n|
+| 67 69 6e 78 2f 68 74 6d 6c 3c 2f 74 74 3e 2e 3c |ginx/html</tt>.<|
+| 2f 70 3e 0a 0a 20 20 20 20 20 20 20 20 20 20 20 |/p>..           |
+| 20 20 20 20 20 20 20 20 20 3c 70 3e 59 6f 75 20 |         <p>You |
+| 73 68 6f 75 6c 64 20 6e 6f 77 20 70 75 74 20 79 |should now put y|
+| 6f 75 72 20 63 6f 6e 74 65 6e 74 20 69 6e 20 61 |our content in a|
+| 20 6c 6f 63 61 74 69 6f 6e 20 6f 66 0a 20 20 20 | location of.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 79 6f 75 72 20 63 68 6f 69 63 65 20 61 6e 64 | your choice and|
+| 20 65 64 69 74 20 74 68 65 20 3c 74 74 3e 72 6f | edit the <tt>ro|
+| 6f 74 3c 2f 74 74 3e 20 63 6f 6e 66 69 67 75 72 |ot</tt> configur|
+| 61 74 69 6f 6e 0a 20 20 20 20 20 20 20 20 20 20 |ation.          |
+| 20 20 20 20 20 20 20 20 20 20 64 69 72 65 63 74 |          direct|
+| 69 76 65 20 69 6e 20 74 68 65 20 3c 73 74 72 6f |ive in the <stro|
+| 6e 67 3e 6e 67 69 6e 78 3c 2f 73 74 72 6f 6e 67 |ng>nginx</strong|
+| 3e 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |>.              |
+| 20 20 20 20 20 20 63 6f 6e 66 69 67 75 72 61 74 |      configurat|
+| 69 6f 6e 20 66 69 6c 65 0a 20 20 20 20 20 20 20 |ion file.       |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 74 74 |             <tt|
+| 3e 2f 65 74 63 2f 6e 67 69 6e 78 2f 6e 67 69 6e |>/etc/nginx/ngin|
+| 78 2e 63 6f 6e 66 3c 2f 74 74 3e 2e 3c 2f 70 3e |x.conf</tt>.</p>|
+| 0a 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |..              |
+| 20 20 3c 2f 64 69 76 3e 0a 20 20 20 20 20 20 20 |  </div>.       |
+| 20 20 20 20 20 3c 2f 64 69 76 3e 0a 0a 20 20 20 |     </div>..   |
+| 20 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 6c |         <div cl|
+| 61 73 73 3d 22 6c 6f 67 6f 73 22 3e 0a 20 20 20 |ass="logos">.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 61 20 |             <a |
+| 68 72 65 66 3d 22 68 74 74 70 3a 2f 2f 6e 67 69 |href="http://ngi|
+| 6e 78 2e 6e 65 74 2f 22 3e 3c 69 6d 67 0a 20 20 |nx.net/"><img.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 73 72 63 3d 22 6e 67 69 6e 78 2d 6c 6f 67 |  src="nginx-log|
+| 6f 2e 70 6e 67 22 20 0a 20 20 20 20 20 20 20 20 |o.png" .        |
+| 20 20 20 20 20 20 20 20 20 20 20 20 61 6c 74 3d |            alt=|
+| 22 5b 20 50 6f 77 65 72 65 64 20 62 79 20 6e 67 |"[ Powered by ng|
+| 69 6e 78 20 5d 22 0a 20 20 20 20 20 20 20 20 20 |inx ]".         |
+| 20 20 20 20 20 20 20 20 20 20 20 77 69 64 74 68 |           width|
+| 3d 22 31 32 31 22 20 68 65 69 67 68 74 3d 22 33 |="121" height="3|
+| 32 22 20 2f 3e 3c 2f 61 3e 0a 0a 20 20 20 20 20 |2" /></a>..     |
+| 20 20 20 20 20 20 20 20 20 20 20 3c 61 20 68 72 |           <a hr|
+| 65 66 3d 22 68 74 74 70 3a 2f 2f 66 65 64 6f 72 |ef="http://fedor|
+| 61 70 72 6f 6a 65 63 74 2e 6f 72 67 2f 22 3e 3c |aproject.org/"><|
+| 69 6d 67 20 0a 20 20 20 20 20 20 20 20 20 20 20 |img .           |
+| 20 20 20 20 20 20 20 20 20 73 72 63 3d 22 70 6f |         src="po|
+| 77 65 72 65 64 62 79 2e 70 6e 67 22 20 0a 20 20 |weredby.png" .  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 61 6c 74 3d 22 5b 20 50 6f 77 65 72 65 64 |  alt="[ Powered|
+| 20 62 79 20 46 65 64 6f 72 61 20 5d 22 20 0a 20 | by Fedora ]" . |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 20 77 69 64 74 68 3d 22 38 38 22 20 68 65 |   width="88" he|
+| 69 67 68 74 3d 22 33 31 22 20 2f 3e 3c 2f 61 3e |ight="31" /></a>|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 3c 2f 64 |.            </d|
+| 69 76 3e 0a 20 20 20 20 20 20 20 20 3c 2f 64 69 |iv>.        </di|
+| 76 3e 0a 20 20 20 20 3c 2f 62 6f 64 79 3e 0a 3c |v>.    </body>.<|
+| 2f 68 74 6d 6c 3e 0a                            |/html>.         |
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - TRUE
+
+dissect_ssl enter frame #23 (first time)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 53
+dissect_ssl3_record: content_type 21 Alert
+decrypt_ssl3_record: app_data len 48, ssl state 0x6BF
+packet_from_server: is from server - TRUE
+decrypt_ssl3_record: using server decoder
+ssl_decrypt_record ciphertext len 48
+Ciphertext[48]:
+| e0 de 53 4f 2c b4 b3 7f 9d bd ce aa a8 d1 3e 12 |..SO,.........>.|
+| 56 5a 8f f6 36 1c 61 87 09 4c a0 75 50 c7 c6 c5 |VZ..6.a..L.uP...|
+| 88 49 eb aa 06 d9 d6 4b d2 ac 51 13 47 8d 0c 88 |.I.....K..Q.G...|
+Plaintext[32]:
+| 01 00 79 c7 fa 54 e9 87 e2 02 79 ad bb ce 0e 31 |..y..T....y....1|
+| 6f 61 27 73 06 72 09 09 09 09 09 09 09 09 09 09 |oa's.r..........|
+ssl_decrypt_record found padding 9 final len 22
+checking mac (len 2, version 303, ct 21 seq 2)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| 79 c7 fa 54 e9 87 e2 02 79 ad bb ce 0e 31 6f 61 |y..T....y....1oa|
+| 27 73 06 72                                     |'s.r            |
+ssl_decrypt_record: mac ok
+
+dissect_ssl enter frame #24 (first time)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = 0x56538a7f7e00
+  record: offset = 0, reported_length_remaining = 53
+dissect_ssl3_record: content_type 21 Alert
+decrypt_ssl3_record: app_data len 48, ssl state 0x6BF
+packet_from_server: is from server - FALSE
+decrypt_ssl3_record: using client decoder
+ssl_decrypt_record ciphertext len 48
+Ciphertext[48]:
+| aa eb db 59 1e 17 9e ca 6d ec 62 3c a8 87 96 21 |...Y....m.b<...!|
+| c0 46 ae 41 9f c3 55 61 4b b3 17 43 92 17 c4 04 |.F.A..UaK..C....|
+| 6c 60 98 ff 0c f1 db 88 6f 47 7e f1 fc 93 5e e6 |l`......oG~...^.|
+Plaintext[32]:
+| 01 00 9b 9a 77 49 e1 61 f1 18 69 d0 aa d4 67 f8 |....wI.a..i...g.|
+| 1e ac 4e 3e 2e 05 09 09 09 09 09 09 09 09 09 09 |..N>............|
+ssl_decrypt_record found padding 9 final len 22
+checking mac (len 2, version 303, ct 21 seq 5)
+tls_check_mac mac type:SHA1 md 2
+Mac[20]:
+| 9b 9a 77 49 e1 61 f1 18 69 d0 aa d4 67 f8 1e ac |..wI.a..i...g...|
+| 4e 3e 2e 05                                     |N>..            |
+ssl_decrypt_record: mac ok
+
+dissect_ssl enter frame #4 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 102
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 1 offset 5 length 93 bytes, remaining 102 
+
+dissect_ssl enter frame #6 (already visited)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 820
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 2 offset 5 length 49 bytes, remaining 58 
+  record: offset = 58, reported_length_remaining = 762
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 11 offset 63 length 744 bytes, remaining 811 
+  record: offset = 811, reported_length_remaining = 9
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 14 offset 816 length 0 bytes, remaining 820 
+
+dissect_ssl enter frame #8 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 342
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 16 offset 5 length 258 bytes, remaining 267 
+  record: offset = 267, reported_length_remaining = 75
+dissect_ssl3_record: content_type 20 Change Cipher Spec
+  record: offset = 273, reported_length_remaining = 69
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 20 offset 0 length 12 bytes, remaining 16 
+
+dissect_ssl enter frame #9 (already visited)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 266
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 4 offset 5 length 182 bytes, remaining 191 
+  record: offset = 191, reported_length_remaining = 75
+dissect_ssl3_record: content_type 20 Change Cipher Spec
+  record: offset = 197, reported_length_remaining = 69
+dissect_ssl3_record: content_type 22 Handshake
+dissect_ssl3_handshake iteration 1 type 20 offset 0 length 12 bytes, remaining 16 
+
+dissect_ssl enter frame #11 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 69
+dissect_ssl3_record: content_type 23 Application Data
+dissect_ssl3_record decrypted len 15
+decrypted app data fragment[15]:
+| 47 45 54 20 2f 20 48 54 54 50 2f 31 2e 31 0a    |GET / HTTP/1.1. |
+
+dissect_ssl enter frame #13 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 69
+dissect_ssl3_record: content_type 23 Application Data
+dissect_ssl3_record decrypted len 12
+decrypted app data fragment[12]:
+| 48 6f 73 74 3a 20 73 6f 6d 69 6e 0a             |Host: somin.    |
+
+dissect_ssl enter frame #15 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 69
+dissect_ssl3_record: content_type 23 Application Data
+dissect_ssl3_record decrypted len 18
+decrypted app data fragment[18]:
+| 43 6f 6e 6e 65 63 74 69 6f 6e 3a 20 63 6c 6f 73 |Connection: clos|
+| 65 0a                                           |e.              |
+
+dissect_ssl enter frame #17 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 53
+dissect_ssl3_record: content_type 23 Application Data
+dissect_ssl3_record decrypted len 1
+decrypted app data fragment[1]:
+| 0a                                              |.               |
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - FALSE
+
+dissect_ssl enter frame #21 (already visited)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 4053
+dissect_ssl3_record: content_type 23 Application Data
+dissect_ssl3_record decrypted len 4007
+decrypted app data fragment[4007]:
+| 48 54 54 50 2f 31 2e 31 20 32 30 30 20 4f 4b 0d |HTTP/1.1 200 OK.|
+| 0a 53 65 72 76 65 72 3a 20 6e 67 69 6e 78 2f 31 |.Server: nginx/1|
+| 2e 31 32 2e 32 0d 0a 44 61 74 65 3a 20 54 68 75 |.12.2..Date: Thu|
+| 2c 20 31 34 20 4a 75 6e 20 32 30 31 38 20 30 32 |, 14 Jun 2018 02|
+| 3a 30 30 3a 32 37 20 47 4d 54 0d 0a 43 6f 6e 74 |:00:27 GMT..Cont|
+| 65 6e 74 2d 54 79 70 65 3a 20 74 65 78 74 2f 68 |ent-Type: text/h|
+| 74 6d 6c 0d 0a 43 6f 6e 74 65 6e 74 2d 4c 65 6e |tml..Content-Len|
+| 67 74 68 3a 20 33 37 30 30 0d 0a 4c 61 73 74 2d |gth: 3700..Last-|
+| 4d 6f 64 69 66 69 65 64 3a 20 54 75 65 2c 20 30 |Modified: Tue, 0|
+| 36 20 4d 61 72 20 32 30 31 38 20 30 39 3a 32 36 |6 Mar 2018 09:26|
+| 3a 32 31 20 47 4d 54 0d 0a 43 6f 6e 6e 65 63 74 |:21 GMT..Connect|
+| 69 6f 6e 3a 20 63 6c 6f 73 65 0d 0a 45 54 61 67 |ion: close..ETag|
+| 3a 20 22 35 61 39 65 35 65 62 64 2d 65 37 34 22 |: "5a9e5ebd-e74"|
+| 0d 0a 53 74 72 69 63 74 2d 54 72 61 6e 73 70 6f |..Strict-Transpo|
+| 72 74 2d 53 65 63 75 72 69 74 79 3a 20 6d 61 78 |rt-Security: max|
+| 2d 61 67 65 3d 33 31 35 33 36 30 30 30 3b 20 69 |-age=31536000; i|
+| 6e 63 6c 75 64 65 53 75 62 64 6f 6d 61 69 6e 73 |ncludeSubdomains|
+| 3b 20 70 72 65 6c 6f 61 64 0d 0a 41 63 63 65 70 |; preload..Accep|
+| 74 2d 52 61 6e 67 65 73 3a 20 62 79 74 65 73 0d |t-Ranges: bytes.|
+| 0a 0d 0a 3c 21 44 4f 43 54 59 50 45 20 68 74 6d |...<!DOCTYPE htm|
+| 6c 20 50 55 42 4c 49 43 20 22 2d 2f 2f 57 33 43 |l PUBLIC "-//W3C|
+| 2f 2f 44 54 44 20 58 48 54 4d 4c 20 31 2e 31 2f |//DTD XHTML 1.1/|
+| 2f 45 4e 22 20 22 68 74 74 70 3a 2f 2f 77 77 77 |/EN" "http://www|
+| 2e 77 33 2e 6f 72 67 2f 54 52 2f 78 68 74 6d 6c |.w3.org/TR/xhtml|
+| 31 31 2f 44 54 44 2f 78 68 74 6d 6c 31 31 2e 64 |11/DTD/xhtml11.d|
+| 74 64 22 3e 0a 0a 3c 68 74 6d 6c 20 78 6d 6c 6e |td">..<html xmln|
+| 73 3d 22 68 74 74 70 3a 2f 2f 77 77 77 2e 77 33 |s="http://www.w3|
+| 2e 6f 72 67 2f 31 39 39 39 2f 78 68 74 6d 6c 22 |.org/1999/xhtml"|
+| 20 78 6d 6c 3a 6c 61 6e 67 3d 22 65 6e 22 3e 0a | xml:lang="en">.|
+| 20 20 20 20 3c 68 65 61 64 3e 0a 20 20 20 20 20 |    <head>.     |
+| 20 20 20 3c 74 69 74 6c 65 3e 54 65 73 74 20 50 |   <title>Test P|
+| 61 67 65 20 66 6f 72 20 74 68 65 20 4e 67 69 6e |age for the Ngin|
+| 78 20 48 54 54 50 20 53 65 72 76 65 72 20 6f 6e |x HTTP Server on|
+| 20 46 65 64 6f 72 61 3c 2f 74 69 74 6c 65 3e 0a | Fedora</title>.|
+| 20 20 20 20 20 20 20 20 3c 6d 65 74 61 20 68 74 |        <meta ht|
+| 74 70 2d 65 71 75 69 76 3d 22 43 6f 6e 74 65 6e |tp-equiv="Conten|
+| 74 2d 54 79 70 65 22 20 63 6f 6e 74 65 6e 74 3d |t-Type" content=|
+| 22 74 65 78 74 2f 68 74 6d 6c 3b 20 63 68 61 72 |"text/html; char|
+| 73 65 74 3d 55 54 46 2d 38 22 20 2f 3e 0a 20 20 |set=UTF-8" />.  |
+| 20 20 20 20 20 20 3c 73 74 79 6c 65 20 74 79 70 |      <style typ|
+| 65 3d 22 74 65 78 74 2f 63 73 73 22 3e 0a 20 20 |e="text/css">.  |
+| 20 20 20 20 20 20 20 20 20 20 2f 2a 3c 21 5b 43 |          /*<![C|
+| 44 41 54 41 5b 2a 2f 0a 20 20 20 20 20 20 20 20 |DATA[*/.        |
+| 20 20 20 20 62 6f 64 79 20 7b 0a 20 20 20 20 20 |    body {.     |
+| 20 20 20 20 20 20 20 20 20 20 20 62 61 63 6b 67 |           backg|
+| 72 6f 75 6e 64 2d 63 6f 6c 6f 72 3a 20 23 66 66 |round-color: #ff|
+| 66 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |f;.             |
+| 20 20 20 63 6f 6c 6f 72 3a 20 23 30 30 30 3b 0a |   color: #000;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 66 6f 6e 74 2d 73 69 7a 65 3a 20 30 2e 39 65 6d |font-size: 0.9em|
+| 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |;.              |
+| 20 20 66 6f 6e 74 2d 66 61 6d 69 6c 79 3a 20 73 |  font-family: s|
+| 61 6e 73 2d 73 65 72 69 66 2c 68 65 6c 76 65 74 |ans-serif,helvet|
+| 69 63 61 3b 0a 20 20 20 20 20 20 20 20 20 20 20 |ica;.           |
+| 20 20 20 20 20 6d 61 72 67 69 6e 3a 20 30 3b 0a |     margin: 0;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 70 61 64 64 69 6e 67 3a 20 30 3b 0a 20 20 20 20 |padding: 0;.    |
+| 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 |        }.      |
+| 20 20 20 20 20 20 3a 6c 69 6e 6b 20 7b 0a 20 20 |      :link {.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 63 6f |              co|
+| 6c 6f 72 3a 20 23 63 30 30 3b 0a 20 20 20 20 20 |lor: #c00;.     |
+| 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 20 |       }.       |
+| 20 20 20 20 20 3a 76 69 73 69 74 65 64 20 7b 0a |     :visited {.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 63 6f 6c 6f 72 3a 20 23 63 30 30 3b 0a 20 20 20 |color: #c00;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 |         }.     |
+| 20 20 20 20 20 20 20 61 3a 68 6f 76 65 72 20 7b |       a:hover {|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 63 6f 6c 6f 72 3a 20 23 66 35 30 3b 0a 20 20 | color: #f50;.  |
+| 20 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 |          }.    |
+| 20 20 20 20 20 20 20 20 68 31 20 7b 0a 20 20 20 |        h1 {.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 74 65 78 |             tex|
+| 74 2d 61 6c 69 67 6e 3a 20 63 65 6e 74 65 72 3b |t-align: center;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 6d 61 72 67 69 6e 3a 20 30 3b 0a 20 20 20 20 | margin: 0;.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 70 61 64 64 |            padd|
+| 69 6e 67 3a 20 30 2e 36 65 6d 20 32 65 6d 20 30 |ing: 0.6em 2em 0|
+| 2e 34 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 |.4em;.          |
+| 20 20 20 20 20 20 62 61 63 6b 67 72 6f 75 6e 64 |      background|
+| 2d 63 6f 6c 6f 72 3a 20 23 32 39 34 31 37 32 3b |-color: #294172;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |.               |
+| 20 63 6f 6c 6f 72 3a 20 23 66 66 66 3b 0a 20 20 | color: #fff;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 77 65 69 67 68 74 3a 20 6e 6f 72 6d 61 |nt-weight: norma|
+| 6c 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |l;.             |
+| 20 20 20 66 6f 6e 74 2d 73 69 7a 65 3a 20 31 2e |   font-size: 1.|
+| 37 35 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 |75em;.          |
+| 20 20 20 20 20 20 62 6f 72 64 65 72 2d 62 6f 74 |      border-bot|
+| 74 6f 6d 3a 20 32 70 78 20 73 6f 6c 69 64 20 23 |tom: 2px solid #|
+| 30 30 30 3b 0a 20 20 20 20 20 20 20 20 20 20 20 |000;.           |
+| 20 7d 0a 20 20 20 20 20 20 20 20 20 20 20 20 68 | }.            h|
+| 31 20 73 74 72 6f 6e 67 20 7b 0a 20 20 20 20 20 |1 strong {.     |
+| 20 20 20 20 20 20 20 20 20 20 20 66 6f 6e 74 2d |           font-|
+| 77 65 69 67 68 74 3a 20 62 6f 6c 64 3b 0a 20 20 |weight: bold;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 73 69 7a 65 3a 20 31 2e 35 65 6d 3b 0a |nt-size: 1.5em;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a 20 20 |            }.  |
+| 20 20 20 20 20 20 20 20 20 20 68 32 20 7b 0a 20 |          h2 {. |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 74 |               t|
+| 65 78 74 2d 61 6c 69 67 6e 3a 20 63 65 6e 74 65 |ext-align: cente|
+| 72 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |r;.             |
+| 20 20 20 62 61 63 6b 67 72 6f 75 6e 64 2d 63 6f |   background-co|
+| 6c 6f 72 3a 20 23 33 43 36 45 42 34 3b 0a 20 20 |lor: #3C6EB4;.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 66 6f |              fo|
+| 6e 74 2d 73 69 7a 65 3a 20 31 2e 31 65 6d 3b 0a |nt-size: 1.1em;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 66 6f 6e 74 2d 77 65 69 67 68 74 3a 20 62 6f 6c |font-weight: bol|
+| 64 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |d;.             |
+| 20 20 20 63 6f 6c 6f 72 3a 20 23 66 66 66 3b 0a |   color: #fff;.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 6d 61 72 67 69 6e 3a 20 30 3b 0a 20 20 20 20 20 |margin: 0;.     |
+| 20 20 20 20 20 20 20 20 20 20 20 70 61 64 64 69 |           paddi|
+| 6e 67 3a 20 30 2e 35 65 6d 3b 0a 20 20 20 20 20 |ng: 0.5em;.     |
+| 20 20 20 20 20 20 20 20 20 20 20 62 6f 72 64 65 |           borde|
+| 72 2d 62 6f 74 74 6f 6d 3a 20 32 70 78 20 73 6f |r-bottom: 2px so|
+| 6c 69 64 20 23 32 39 34 31 37 32 3b 0a 20 20 20 |lid #294172;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 |         }.     |
+| 20 20 20 20 20 20 20 68 72 20 7b 0a 20 20 20 20 |       hr {.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 64 69 73 70 |            disp|
+| 6c 61 79 3a 20 6e 6f 6e 65 3b 0a 20 20 20 20 20 |lay: none;.     |
+| 20 20 20 20 20 20 20 7d 0a 20 20 20 20 20 20 20 |       }.       |
+| 20 20 20 20 20 2e 63 6f 6e 74 65 6e 74 20 7b 0a |     .content {.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 70 61 64 64 69 6e 67 3a 20 31 65 6d 20 35 65 6d |padding: 1em 5em|
+| 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a |;.            }.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 2e 61 6c 65 |            .ale|
+| 72 74 20 7b 0a 20 20 20 20 20 20 20 20 20 20 20 |rt {.           |
+| 20 20 20 20 20 62 6f 72 64 65 72 3a 20 32 70 78 |     border: 2px|
+| 20 73 6f 6c 69 64 20 23 30 30 30 3b 0a 20 20 20 | solid #000;.   |
+| 20 20 20 20 20 20 20 20 20 7d 0a 0a 20 20 20 20 |         }..    |
+| 20 20 20 20 20 20 20 20 69 6d 67 20 7b 0a 20 20 |        img {.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 62 6f |              bo|
+| 72 64 65 72 3a 20 32 70 78 20 73 6f 6c 69 64 20 |rder: 2px solid |
+| 23 66 66 66 3b 0a 20 20 20 20 20 20 20 20 20 20 |#fff;.          |
+| 20 20 20 20 20 20 70 61 64 64 69 6e 67 3a 20 32 |      padding: 2|
+| 70 78 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |px;.            |
+| 20 20 20 20 6d 61 72 67 69 6e 3a 20 32 70 78 3b |    margin: 2px;|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 7d 0a 20 |.            }. |
+| 20 20 20 20 20 20 20 20 20 20 20 61 3a 68 6f 76 |           a:hov|
+| 65 72 20 69 6d 67 20 7b 0a 20 20 20 20 20 20 20 |er img {.       |
+| 20 20 20 20 20 20 20 20 20 62 6f 72 64 65 72 3a |         border:|
+| 20 32 70 78 20 73 6f 6c 69 64 20 23 32 39 34 31 | 2px solid #2941|
+| 37 32 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |72;.            |
+| 7d 0a 20 20 20 20 20 20 20 20 20 20 20 20 2e 6c |}.            .l|
+| 6f 67 6f 73 20 7b 0a 20 20 20 20 20 20 20 20 20 |ogos {.         |
+| 20 20 20 20 20 20 20 6d 61 72 67 69 6e 3a 20 31 |       margin: 1|
+| 65 6d 3b 0a 20 20 20 20 20 20 20 20 20 20 20 20 |em;.            |
+| 20 20 20 20 74 65 78 74 2d 61 6c 69 67 6e 3a 20 |    text-align: |
+| 63 65 6e 74 65 72 3b 0a 20 20 20 20 20 20 20 20 |center;.        |
+| 20 20 20 20 7d 0a 20 20 20 20 20 20 20 20 20 20 |    }.          |
+| 20 20 2f 2a 5d 5d 3e 2a 2f 0a 20 20 20 20 20 20 |  /*]]>*/.      |
+| 20 20 3c 2f 73 74 79 6c 65 3e 0a 20 20 20 20 3c |  </style>.    <|
+| 2f 68 65 61 64 3e 0a 0a 20 20 20 20 3c 62 6f 64 |/head>..    <bod|
+| 79 3e 0a 20 20 20 20 20 20 20 20 3c 68 31 3e 57 |y>.        <h1>W|
+| 65 6c 63 6f 6d 65 20 74 6f 20 3c 73 74 72 6f 6e |elcome to <stron|
+| 67 3e 6e 67 69 6e 78 3c 2f 73 74 72 6f 6e 67 3e |g>nginx</strong>|
+| 20 6f 6e 20 46 65 64 6f 72 61 21 3c 2f 68 31 3e | on Fedora!</h1>|
+| 0a 0a 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 |..        <div c|
+| 6c 61 73 73 3d 22 63 6f 6e 74 65 6e 74 22 3e 0a |lass="content">.|
+| 20 20 20 20 20 20 20 20 20 20 20 20 3c 70 3e 54 |            <p>T|
+| 68 69 73 20 70 61 67 65 20 69 73 20 75 73 65 64 |his page is used|
+| 20 74 6f 20 74 65 73 74 20 74 68 65 20 70 72 6f | to test the pro|
+| 70 65 72 20 6f 70 65 72 61 74 69 6f 6e 20 6f 66 |per operation of|
+| 20 74 68 65 0a 20 20 20 20 20 20 20 20 20 20 20 | the.           |
+| 20 3c 73 74 72 6f 6e 67 3e 6e 67 69 6e 78 3c 2f | <strong>nginx</|
+| 73 74 72 6f 6e 67 3e 20 48 54 54 50 20 73 65 72 |strong> HTTP ser|
+| 76 65 72 20 61 66 74 65 72 20 69 74 20 68 61 73 |ver after it has|
+| 20 62 65 65 6e 0a 20 20 20 20 20 20 20 20 20 20 | been.          |
+| 20 20 69 6e 73 74 61 6c 6c 65 64 2e 20 49 66 20 |  installed. If |
+| 79 6f 75 20 63 61 6e 20 72 65 61 64 20 74 68 69 |you can read thi|
+| 73 20 70 61 67 65 2c 20 69 74 20 6d 65 61 6e 73 |s page, it means|
+| 20 74 68 61 74 20 74 68 65 0a 20 20 20 20 20 20 | that the.      |
+| 20 20 20 20 20 20 77 65 62 20 73 65 72 76 65 72 |      web server|
+| 20 69 6e 73 74 61 6c 6c 65 64 20 61 74 20 74 68 | installed at th|
+| 69 73 20 73 69 74 65 20 69 73 20 77 6f 72 6b 69 |is site is worki|
+| 6e 67 0a 20 20 20 20 20 20 20 20 20 20 20 20 70 |ng.            p|
+| 72 6f 70 65 72 6c 79 2e 3c 2f 70 3e 0a 0a 20 20 |roperly.</p>..  |
+| 20 20 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 |          <div c|
+| 6c 61 73 73 3d 22 61 6c 65 72 74 22 3e 0a 20 20 |lass="alert">.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 68 |              <h|
+| 32 3e 57 65 62 73 69 74 65 20 41 64 6d 69 6e 69 |2>Website Admini|
+| 73 74 72 61 74 6f 72 3c 2f 68 32 3e 0a 20 20 20 |strator</h2>.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 64 69 |             <di|
+| 76 20 63 6c 61 73 73 3d 22 63 6f 6e 74 65 6e 74 |v class="content|
+| 22 3e 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 |">.             |
+| 20 20 20 20 20 20 20 3c 70 3e 54 68 69 73 20 69 |       <p>This i|
+| 73 20 74 68 65 20 64 65 66 61 75 6c 74 20 3c 74 |s the default <t|
+| 74 3e 69 6e 64 65 78 2e 68 74 6d 6c 3c 2f 74 74 |t>index.html</tt|
+| 3e 20 70 61 67 65 20 74 68 61 74 0a 20 20 20 20 |> page that.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 69 73 20 64 69 73 74 72 69 62 75 74 65 64 20 77 |is distributed w|
+| 69 74 68 20 3c 73 74 72 6f 6e 67 3e 6e 67 69 6e |ith <strong>ngin|
+| 78 3c 2f 73 74 72 6f 6e 67 3e 20 6f 6e 0a 20 20 |x</strong> on.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 46 65 64 6f 72 61 2e 20 20 49 74 20 69 73 |  Fedora.  It is|
+| 20 6c 6f 63 61 74 65 64 20 69 6e 0a 20 20 20 20 | located in.    |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 3c 74 74 3e 2f 75 73 72 2f 73 68 61 72 65 2f 6e |<tt>/usr/share/n|
+| 67 69 6e 78 2f 68 74 6d 6c 3c 2f 74 74 3e 2e 3c |ginx/html</tt>.<|
+| 2f 70 3e 0a 0a 20 20 20 20 20 20 20 20 20 20 20 |/p>..           |
+| 20 20 20 20 20 20 20 20 20 3c 70 3e 59 6f 75 20 |         <p>You |
+| 73 68 6f 75 6c 64 20 6e 6f 77 20 70 75 74 20 79 |should now put y|
+| 6f 75 72 20 63 6f 6e 74 65 6e 74 20 69 6e 20 61 |our content in a|
+| 20 6c 6f 63 61 74 69 6f 6e 20 6f 66 0a 20 20 20 | location of.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 79 6f 75 72 20 63 68 6f 69 63 65 20 61 6e 64 | your choice and|
+| 20 65 64 69 74 20 74 68 65 20 3c 74 74 3e 72 6f | edit the <tt>ro|
+| 6f 74 3c 2f 74 74 3e 20 63 6f 6e 66 69 67 75 72 |ot</tt> configur|
+| 61 74 69 6f 6e 0a 20 20 20 20 20 20 20 20 20 20 |ation.          |
+| 20 20 20 20 20 20 20 20 20 20 64 69 72 65 63 74 |          direct|
+| 69 76 65 20 69 6e 20 74 68 65 20 3c 73 74 72 6f |ive in the <stro|
+| 6e 67 3e 6e 67 69 6e 78 3c 2f 73 74 72 6f 6e 67 |ng>nginx</strong|
+| 3e 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |>.              |
+| 20 20 20 20 20 20 63 6f 6e 66 69 67 75 72 61 74 |      configurat|
+| 69 6f 6e 20 66 69 6c 65 0a 20 20 20 20 20 20 20 |ion file.       |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 74 74 |             <tt|
+| 3e 2f 65 74 63 2f 6e 67 69 6e 78 2f 6e 67 69 6e |>/etc/nginx/ngin|
+| 78 2e 63 6f 6e 66 3c 2f 74 74 3e 2e 3c 2f 70 3e |x.conf</tt>.</p>|
+| 0a 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |..              |
+| 20 20 3c 2f 64 69 76 3e 0a 20 20 20 20 20 20 20 |  </div>.       |
+| 20 20 20 20 20 3c 2f 64 69 76 3e 0a 0a 20 20 20 |     </div>..   |
+| 20 20 20 20 20 20 20 20 20 3c 64 69 76 20 63 6c |         <div cl|
+| 61 73 73 3d 22 6c 6f 67 6f 73 22 3e 0a 20 20 20 |ass="logos">.   |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 3c 61 20 |             <a |
+| 68 72 65 66 3d 22 68 74 74 70 3a 2f 2f 6e 67 69 |href="http://ngi|
+| 6e 78 2e 6e 65 74 2f 22 3e 3c 69 6d 67 0a 20 20 |nx.net/"><img.  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 73 72 63 3d 22 6e 67 69 6e 78 2d 6c 6f 67 |  src="nginx-log|
+| 6f 2e 70 6e 67 22 20 0a 20 20 20 20 20 20 20 20 |o.png" .        |
+| 20 20 20 20 20 20 20 20 20 20 20 20 61 6c 74 3d |            alt=|
+| 22 5b 20 50 6f 77 65 72 65 64 20 62 79 20 6e 67 |"[ Powered by ng|
+| 69 6e 78 20 5d 22 0a 20 20 20 20 20 20 20 20 20 |inx ]".         |
+| 20 20 20 20 20 20 20 20 20 20 20 77 69 64 74 68 |           width|
+| 3d 22 31 32 31 22 20 68 65 69 67 68 74 3d 22 33 |="121" height="3|
+| 32 22 20 2f 3e 3c 2f 61 3e 0a 0a 20 20 20 20 20 |2" /></a>..     |
+| 20 20 20 20 20 20 20 20 20 20 20 3c 61 20 68 72 |           <a hr|
+| 65 66 3d 22 68 74 74 70 3a 2f 2f 66 65 64 6f 72 |ef="http://fedor|
+| 61 70 72 6f 6a 65 63 74 2e 6f 72 67 2f 22 3e 3c |aproject.org/"><|
+| 69 6d 67 20 0a 20 20 20 20 20 20 20 20 20 20 20 |img .           |
+| 20 20 20 20 20 20 20 20 20 73 72 63 3d 22 70 6f |         src="po|
+| 77 65 72 65 64 62 79 2e 70 6e 67 22 20 0a 20 20 |weredby.png" .  |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 61 6c 74 3d 22 5b 20 50 6f 77 65 72 65 64 |  alt="[ Powered|
+| 20 62 79 20 46 65 64 6f 72 61 20 5d 22 20 0a 20 | by Fedora ]" . |
+| 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |                |
+| 20 20 20 77 69 64 74 68 3d 22 38 38 22 20 68 65 |   width="88" he|
+| 69 67 68 74 3d 22 33 31 22 20 2f 3e 3c 2f 61 3e |ight="31" /></a>|
+| 0a 20 20 20 20 20 20 20 20 20 20 20 20 3c 2f 64 |.            </d|
+| 69 76 3e 0a 20 20 20 20 20 20 20 20 3c 2f 64 69 |iv>.        </di|
+| 76 3e 0a 20 20 20 20 3c 2f 62 6f 64 79 3e 0a 3c |v>.    </body>.<|
+| 2f 68 74 6d 6c 3e 0a                            |/html>.         |
+process_ssl_payload: found handle 0x5653887a8b50 (http-over-tls)
+packet_from_server: is from server - TRUE
+
+dissect_ssl enter frame #23 (already visited)
+packet_from_server: is from server - TRUE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 53
+dissect_ssl3_record: content_type 21 Alert
+
+dissect_ssl enter frame #24 (already visited)
+packet_from_server: is from server - FALSE
+  conversation = 0x56538a7f7430, ssl_session = (nil)
+  record: offset = 0, reported_length_remaining = 53
+dissect_ssl3_record: content_type 21 Alert
