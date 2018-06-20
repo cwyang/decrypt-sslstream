@@ -110,6 +110,7 @@ int decrypt_pms(SSL_DECRYPT_CTX *pctx) ;
 int decrypt(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
 int decrypt_record(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
 int decrypt_handshake(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
+int decrypt_alert(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
 int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input);
 int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
 static int generate_ssl(SSL_DECRYPT_CTX *pctx);
@@ -334,6 +335,16 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
         mesg("%s[TLS record] change cipher spec     len=%u\n", hdr, length);
         break;
     case TLS_R_ALERT:
+        if (pctx->peer[dir].state >= TLS_ST_CHANGE_CIPHER_SPEC) {
+            // encrypted alert
+            mesg("%s[TLS record] encrypted alert        len=%u\n", hdr, length);
+            rc = decrypt_alert(pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
+            if (rc < 0) {
+                mesg("%s[TLS record] decrypt alert error %d\n", hdr, rc);
+                rc = EINVAL;
+            }
+            return rc;
+        }
         mesg("%s[TLS record] alert                  len=%u\n", hdr, length);
         break;
     default:
@@ -530,7 +541,8 @@ static int read_bio(BIO *b, char *out, int len)
         return -1;
     }
 
-    mesg("%s: buf_ptr = %p, buf_len=%4zu  |  ", __FUNCTION__, buf, (buf)->size);
+    mesg("%s: buf_ptr = %p, buf_len=%4zu, len=%4d  |  ",
+         __FUNCTION__, buf, (buf)->size, len);
     
     if (buf->size < len) {
         len = (int)buf->size;
@@ -686,6 +698,22 @@ static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_t
     case TLS_R_HANDSHAKE:
         n = ssl->method->ssl_read_bytes(ssl, SSL3_RT_HANDSHAKE, buf, 2048, 0);
         break;
+    case TLS_R_ALERT:
+        n = ssl->method->ssl_read_bytes(ssl, SSL3_RT_APPLICATION_DATA, buf, 2048, 0);
+        if (n == 0) { // valid alert
+            char buf[2];
+            buf[0] = ssl->s3->alert_fragment[0];
+            buf[1] = ssl->s3->alert_fragment[1];
+            mesg("%s: alert[%d]\n", __FUNCTION__, n);
+            {
+                char *c = hex2buf(buf, 2);
+                mesg("%s\n", c);
+                free (c);
+            }
+            return 0;
+        }
+        
+        break;
     default:
         n = SSL_read(ssl, buf, 2048);
         break;
@@ -708,4 +736,8 @@ int decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)
 int decrypt_handshake(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
 {
     return _decrypt_record(ssl, _input, len, is_tls, TLS_R_HANDSHAKE);
+}
+int decrypt_alert(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
+{
+    return _decrypt_record(ssl, _input, len, is_tls, TLS_R_ALERT);
 }
