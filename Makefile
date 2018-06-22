@@ -21,8 +21,10 @@ $(OPENSSL_INC):
 
 demo: decrypt 
 #	./decrypt samples/rsasnakeoil2.key samples/rsasnakeoil2-client samples/rsasnakeoil2-server
-	./decrypt samples/somin_tmp2k.pem samples/somin180614-client samples/somin180614-server
+#	./decrypt samples/somin_tmp2k.pem samples/somin180614-client samples/somin180614-server
 #	./decrypt samples/somin_tmp2k.pem samples/somin180620-client samples/somin180620-server
+	./decrypt samples/somin_tmp2k.pem samples/c1 samples/s1 samples/c2 samples/s2 samples/c3 samples/s3 samples/c4 samples/s4
+
 
 %.o: %c $(DEPS) $(OPENSSL_INC)
 	$(CC) -c -o $@ $< $(CFLAGS)

@@ -594,11 +594,17 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
         mesg("%s[TLS handshake] SERVER_HELLO_DONE   len=%zu\n", hdr, buflen); break;
     case TLS_H_CERTIFICATE_VERIFY:
         mesg("%s[TLS handshake] CERTIFICATE_VERIFY  len=%zu\n", hdr, buflen); break;
-    case TLS_H_NEW_SESSION_TICKET:
+    case TLS_H_NEW_SESSION_TICKET: {
         mesg("%s[TLS handshake] NEW_SESSION_TICKET  len=%zu\n", hdr, buflen);
-        extract_payload(&buf[4], length, 4, length - 4, &pctx->server_ticket);
+        uint16_t tlen = get_u16(&buf[8]);
+        if (tlen + 6 != length) {
+            mesg("%s[TLS handshake] tlen + 6 (%d) != len (%d)\n", hdr, tlen + 6, length);
+            break;
+        }
+        extract_payload(&buf[8], length-4, 2, tlen, &pctx->server_ticket);
         mesg_buf("server-ticket", pctx->server_ticket.buf, pctx->server_ticket.len);
         break;
+    }
     case TLS_H_FINISHED:
         mesg("%s[TLS handshake] FINISHED            len=%zu\n", hdr, buflen); break;
     default:
