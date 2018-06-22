@@ -114,9 +114,12 @@ typedef struct st_ssl_decrypt_ctx {
 #define SET_SERVER_RANDOM(x) do { x |= 2; } while (0)
 #define SET_PMS(x) do { x |= 4; } while (0)
     str_t       client_random;
-    str_t       client_sessionid;
     str_t       server_random;
-    str_t       server_sessionid;
+    str_t       client_id;
+    str_t       server_id;
+    str_t       client_ticket;
+    str_t       server_ticket;
+    str_t       sni;
     str_t       pms;
     char        master_secret[MASTER_SECRET_LEN];
     EVP_PKEY    *pkey;
@@ -244,9 +247,10 @@ void SSL_DECRYPT_CTX_free(SSL_DECRYPT_CTX *pctx)
     SSL_CTX_free(pctx->ssl_ctx);
     str_free(&pctx->client_random);
     str_free(&pctx->server_random);
-    str_free(&pctx->client_sessionid);
-    str_free(&pctx->server_sessionid);
+    str_free(&pctx->client_id);
+    str_free(&pctx->server_id);
     str_free(&pctx->pms);
+    str_free(&pctx->sni);
     if (pctx->pkey) EVP_PKEY_free(pctx->pkey);
 }
 
@@ -408,11 +412,68 @@ static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
         char data[];
         // opaque seession id..
     } *p = (struct client_hello *)buf;
-
-    if (len < sizeof(struct client_hello) + p->len)
-        return -EPROTO;
+    char *pp = &p->data[p->len], *pend = (char *)p + len;
+    uint16_t cipherlen, extlen;
+    uint8_t complen;
+    unsigned minsize = sizeof(struct client_hello) + p->len + 3; /* cipherlen + complen */
+#define CHECK(P,LEN,END) do { if (P+LEN > END) return -EPROTO; } while (0)
+    CHECK(pp,0,pend);
     PARSE(pctx->client_random, p->random, 32);
-    PARSE(pctx->client_sessionid, p->data, p->len);
+    PARSE(pctx->client_id, p->data, p->len);
+    cipherlen = get_u16(pp);
+    CHECK(pp, 3+cipherlen, pend);
+    pp += (2 + cipherlen);
+    complen = get_u8(pp);
+    pp++;
+    pctx->compression = get_u8(pp); /* warning. 1-byte compression assumption */
+    pp += (complen);
+    CHECK(pp, 0, pend);
+    if (pp == pend) { // no extension
+        mesg("%s: no extension", __FUNCTION__);
+        return 0;
+    }
+    extlen = get_u16(pp);
+    if (extlen == 0) {
+        mesg("%s: no extension", __FUNCTION__);
+        return 0;
+    }
+    pp += 2;
+    CHECK(pp, extlen, pend);
+    int extnum = 0;
+    while (1) {
+        uint16_t type = get_u16(pp);
+        mesg("%s: extension type=%d\n", __FUNCTION__, type);
+        
+        pp += 2;
+        switch (type) {
+        case 0: {
+            unsigned char *q = pp + 4;
+            if (*q++ != 0)
+                break;
+            uint16_t snilen = get_u16(q);
+            PARSE(pctx->sni, q + 2, snilen);
+            break;
+        }
+        case 35: {   // session ticket
+            uint16_t ticketlen = get_u16(pp);
+            PARSE(pctx->client_ticket, pp + 2, ticketlen);
+            break;
+        }
+        default:
+            break;
+        }
+        uint16_t l = get_u16(pp);
+        CHECK(pp, 2 + l, pend);
+        pp += 2 + l;
+        extnum++;
+        
+        if (pp == pend) {
+            mesg("%s: %d extensions processed\n", __FUNCTION__, extnum);
+            break;
+        }
+    }
+    
+    pctx->compression = get_u8(&(p->data[p->len+2]));
 
     return 0;
 }
@@ -431,7 +492,7 @@ static int parse_server_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
     if (len < sizeof(struct server_hello) + p->len + 3)
         return -EPROTO;
     pctx->version = p->version;
-    PARSE(pctx->server_sessionid, p->data, p->len);
+    PARSE(pctx->server_id, p->data, p->len);
     pctx->cipher = htons(get_u16(&(p->data[p->len])));
     pctx->compression = get_u8(&(p->data[p->len+2]));
 
@@ -492,7 +553,9 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
             return EPROTO;
         }
         mesg_buf("client-random", pctx->client_random.buf, pctx->client_random.len);
-        mesg_buf("client-session-id", pctx->client_sessionid.buf, pctx->client_sessionid.len);
+        mesg_buf("client-id", pctx->client_id.buf, pctx->client_id.len);
+        mesg_buf("client-ticket", pctx->client_ticket.buf, pctx->client_ticket.len);
+        mesg_buf("sni", pctx->sni.buf, pctx->sni.len);
         SET_CLIENT_RANDOM(pctx->ready);
         break;
     case TLS_H_SERVER_HELLO:
@@ -502,7 +565,7 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
             return EPROTO;
         }
         mesg ("cipher: %s\n", SSL_CIPHER_get_name(pctx->ssl_cipher));
-        mesg_buf("server-session-id", pctx->server_sessionid.buf, 0);
+        mesg_buf("server-id", pctx->server_id.buf, 0);
         
         if ((v = check_rsa(pctx->ssl_cipher)) < 0) {
             mesg("%s[TLS handshake] non-RSA %s, decryption skipped\n", hdr,
@@ -532,7 +595,10 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
     case TLS_H_CERTIFICATE_VERIFY:
         mesg("%s[TLS handshake] CERTIFICATE_VERIFY  len=%zu\n", hdr, buflen); break;
     case TLS_H_NEW_SESSION_TICKET:
-        mesg("%s[TLS handshake] NEW_SESSION_TICKET  len=%zu\n", hdr, buflen); break;
+        mesg("%s[TLS handshake] NEW_SESSION_TICKET  len=%zu\n", hdr, buflen);
+        extract_payload(&buf[4], length, 4, length - 4, &pctx->server_ticket);
+        mesg_buf("server-ticket", pctx->server_ticket.buf, pctx->server_ticket.len);
+        break;
     case TLS_H_FINISHED:
         mesg("%s[TLS handshake] FINISHED            len=%zu\n", hdr, buflen); break;
     default:
