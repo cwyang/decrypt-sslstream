@@ -4,6 +4,7 @@
  * 18 June 2018, Chul-Woong Yang (cwyang@gmail.com)
  */
 
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -40,6 +41,8 @@ char *hex2buf(const void *vp, int len)
     // 0123456789012345678901234567890123456789012345678901234567890123456
     // 0032: 00 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff   0123456789ABCDEFn
     // 73 byte per 16 byte
+    assert(len > 0);
+    
     buf = malloc(buflen);
 
     if (!buf) 
@@ -53,6 +56,7 @@ char *hex2buf(const void *vp, int len)
     *bp++ = hex[((index%256)) & 0xf];
     *bp++ = ':';
     bp++;
+
     ap = bp + 50;
     while (--len >= 0) {
         unsigned char ch = *cp++;
