@@ -415,7 +415,7 @@ static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
     char *pp = &p->data[p->len], *pend = (char *)p + len;
     uint16_t cipherlen, extlen;
     uint8_t complen;
-    unsigned minsize = sizeof(struct client_hello) + p->len + 3; /* cipherlen + complen */
+
 #define CHECK(P,LEN,END) do { if (P+LEN > END) return -EPROTO; } while (0)
     CHECK(pp,0,pend);
     PARSE(pctx->client_random, p->random, 32);
@@ -565,7 +565,7 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
             return EPROTO;
         }
         mesg ("cipher: %s\n", SSL_CIPHER_get_name(pctx->ssl_cipher));
-        mesg_buf("server-id", pctx->server_id.buf, 0);
+        mesg_buf("server-id", pctx->server_id.buf, pctx->server_id.len);
         
         if ((v = check_rsa(pctx->ssl_cipher)) < 0) {
             mesg("%s[TLS handshake] non-RSA %s, decryption skipped\n", hdr,
