@@ -14,6 +14,7 @@
 */
 
 #if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#warning This program does not support OpenSSL version >= 1.1.0 */
 void init_library(void) 
 {
     OPENSSL_init_ssl(0, NULL);
@@ -89,6 +90,29 @@ RSA *EVP_PKEY_get0_RSA(EVP_PKEY *pkey)
 }
 
 #endif
+
+int my_ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek) 
+{
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+    /* from record_layer_s3.c */
+    extern int ssl3_read_bytes(SSL *s, int type, int *recvd_type, unsigned char *buf, int len, int peek);
+    return ssl3_read_bytes(s, type, (int *)NULL, buf, len, peek);
+#else
+    /* from s3_pkt.c */
+    extern int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek);
+    return ssl3_read_bytes(s, type, buf, len, peek);
+#endif
+}
+
+void my_ssl_clear_state(SSL *s) 
+{
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+    s->statem.hand_state = TLS_ST_OK;
+#else
+    s->state = SSL_ST_OK;
+#endif
+    s->server = 0;  /* to handle alert in >= 1.1.0.a */
+}
 
 
 

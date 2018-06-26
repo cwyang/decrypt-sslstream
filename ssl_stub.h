@@ -11,6 +11,7 @@ extern int check_rsa (const SSL_CIPHER *cipher);
 extern const SSL_METHOD *SSL_method(uint8_t major, uint8_t minor);
 
 #if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#include <ssl_locl.h>
 /* nothing yet */
 #else
 extern RSA *EVP_PKEY_get0_RSA(EVP_PKEY *pkey);
@@ -49,7 +50,8 @@ extern int ssl3_generate_master_secret(SSL *s, unsigned char *out,
                                        unsigned char *p, int len);        
 extern int ssl3_setup_key_block(SSL *s);
 extern int ssl3_change_cipher_state(SSL *s, int which);
-/* from s3_pkt.c */
-extern int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek);
+
+extern int my_ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek);
+extern void my_ssl_clear_state(SSL *s);
 #endif
 

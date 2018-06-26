@@ -67,7 +67,7 @@ void mesg_buf(const char *hdr, char *p, int n)
 {
     extern char *hex2buf(const void *vp, int len);
     mesg("%s[%d]:\n", hdr, n); 
-    if (n == 0)
+    if (n <= 0)
         return;
     
     char *c = hex2buf(p, n);
@@ -751,9 +751,6 @@ static void ssl_info_cb(const SSL *ssl, int where, int ret)
    
 static int generate_ssl(SSL_DECRYPT_CTX *pctx) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
-#error This program does not support OpenSSL version >= 1.1.0 */
-#else
     uint8_t major = pctx->version & 0xff;
     uint8_t minor = pctx->version >> 8;
     int rc = 0, rc2 = 0;
@@ -781,7 +778,8 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
         
         s->s3->tmp.new_cipher = pctx->ssl_cipher;
         s->handshake_func = handshake_cb;
-        s->state = SSL_ST_OK;
+        my_ssl_clear_state(s);
+        mesg("SSL_new: server=%d\n", s->server);
         memcpy(s->s3->client_random, pctx->client_random.buf, SSL3_RANDOM_SIZE);
         memcpy(s->s3->server_random, pctx->server_random.buf, SSL3_RANDOM_SIZE);
         pctx->peer[i].ssl = s;
@@ -841,7 +839,6 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
     
 error:
     return -1;
-#endif
 }
 
 // temporary check
@@ -907,14 +904,17 @@ static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_t
     char buf[2048];
     int n;
     
-    mesg("%s: buf_ptr = %p, buf_len=%zu\n", __FUNCTION__, *_input, (*_input)->size);
+    mesg("%s: type=%d buf_ptr = %p, buf_len=%zu\n", __FUNCTION__, type, *_input, (*_input)->size);
 
     switch(type) {
     case TLS_R_HANDSHAKE: 
-        n = ssl3_read_bytes(ssl, SSL3_RT_HANDSHAKE, buf, 2048, 0);  /* no DTLS */
+        n = my_ssl3_read_bytes(ssl, SSL3_RT_HANDSHAKE, buf, 2048, 0);  /* no DTLS */
+        mesg("%s:n=%d\n", __FUNCTION__, n);
+        
         break;
     case TLS_R_ALERT:
-        n = ssl3_read_bytes(ssl, SSL3_RT_APPLICATION_DATA, buf, 2048, 0);   /* no DTLS */
+        n = my_ssl3_read_bytes(ssl, SSL3_RT_APPLICATION_DATA, buf, 2048, 0);   /* no DTLS */
+        print_ssl_error();
         if (n == 0) { // valid alert
             /* char buf[2]; */
             /* buf[0] = ssl->s3->alert_fragment[0]; // alert_level */
@@ -922,6 +922,7 @@ static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_t
             /* mesg_buf("alert", buf, 2); */
             return 0;
         }
+        return 0;
         
         break;
     default:
