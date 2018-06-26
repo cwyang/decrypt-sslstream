@@ -3,7 +3,6 @@
  * decrypt-sslstream
  * 6 June 2018, Chul-Woong Yang (cwyang@gmail.com)
  *
- * TODO: support OpenSSL 1.1.0 and later
  * TODO: support extended master secret
  * NOTE: TLS 1.3 does not support RSA.
  *
@@ -778,6 +777,7 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
         
         s->s3->tmp.new_cipher = pctx->ssl_cipher;
         s->handshake_func = handshake_cb;
+        s->version = pctx->version;
         my_ssl_clear_state(s);
         mesg("SSL_new: server=%d\n", s->server);
         memcpy(s->s3->client_random, pctx->client_random.buf, SSL3_RANDOM_SIZE);
@@ -804,10 +804,10 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
                 
             } else {
                 ss->master_key_length =
-                    tls1_generate_master_secret(s,
-                                                ss->master_key,
-                                                pctx->pms.buf + 2,
-                                                pctx->pms.len);
+                    my_tls1_generate_master_secret(s,
+                                                   ss->master_key,
+                                                   pctx->pms.buf + 2,
+                                                   pctx->pms.len);
             }
             rc = tls1_setup_key_block(s);
             rc2 = tls1_change_cipher_state(s, cipher_dir);
@@ -817,10 +817,10 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
                 ss->master_key_length = MASTER_SECRET_LEN;
             } else {
                 ss->master_key_length =
-                    ssl3_generate_master_secret(s,
-                                                ss->master_key,
-                                                pctx->pms.buf + 2,
-                                                pctx->pms.len);
+                    my_ssl3_generate_master_secret(s,
+                                                   ss->master_key,
+                                                   pctx->pms.buf + 2,
+                                                   pctx->pms.len);
             }
             rc = ssl3_setup_key_block(s);
             rc2 = ssl3_change_cipher_state(s, cipher_dir);
