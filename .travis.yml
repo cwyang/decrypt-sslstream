@@ -5,6 +5,6 @@ before_install:
  - pip install --user cpp-coveralls # --use-mirrors
  - sudo apt-get install valgrind
 script:
- - make decrypt-check
+ - make travis-check
 after_success:
  - bash <(curl -s https://codecov.io/bash)
