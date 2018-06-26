@@ -2,6 +2,11 @@
 /*
  * decrypt-sslstream
  * 6 June 2018, Chul-Woong Yang (cwyang@gmail.com)
+ *
+ * TODO: support OpenSSL 1.1.0 and later
+ * TODO: support extended master secret
+ * NOTE: TLS 1.3 does not support RSA.
+ *
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -119,6 +124,8 @@ typedef struct st_ssl_decrypt_ctx {
         unsigned        client_dir:1;      // dir 0 is client
         unsigned        client_ticket:1;
         unsigned        server_ticket:1;
+        unsigned        client_ems:1;
+        unsigned        server_ems:1;
     } flag;
     uint16_t    version;
     uint16_t    cipher;
@@ -140,9 +147,6 @@ typedef struct st_ssl_decrypt_ctx {
     str_t       master_secret;
 
     EVP_PKEY    *pkey;
-
-    /* TLS 1.3 does not support RSA. */
-    /* TODO: extended master secret */
 } SSL_DECRYPT_CTX;
 
 void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx, EVP_PKEY *pkey);
@@ -391,7 +395,10 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
                     return EPROTO;
                 }
             }
-            generate_ssl(pctx);
+            if (generate_ssl(pctx) < 0) {
+                mesg("%s[TLS record] CHANGE_CIPHER_SPEC     cannot generate key\n", hdr);
+                return EPROTO;
+            }
             pctx->flag.gen_params = 1;
             SET_READY(pctx->ready);
         }
@@ -421,38 +428,60 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
     return rc;
 }
 
-static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len) 
+static int parse_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len, int is_client) 
 {
     struct __attribute ((__packed__)) client_hello {
         uint16_t version;
         uint8_t  random[32];
         uint8_t  len;
         char data[];
-        // opaque seession id..
     } *p = (struct client_hello *)buf;
     char *pp = &p->data[p->len], *pend = (char *)p + len;
     uint16_t cipherlen, extlen;
     uint8_t complen;
-
+    extern const SSL_CIPHER *ssl3_get_cipher_by_char(const unsigned char *p);
+    const char *hdr = is_client ? "CLIENT_HELLO" : "SERVER_HELLO";
+    
 #define CHECK(P,LEN,END) do { if (P+LEN > END) return -EPROTO; } while (0)
-    CHECK(pp,0,pend);
-    str_new(&pctx->client_random, p->random, 32);
-    str_new(&pctx->client_id, p->data, p->len);
-    cipherlen = get_u16(pp);
-    CHECK(pp, 3+cipherlen, pend);
-    pp += (2 + cipherlen);
-    complen = get_u8(pp);
-    pp++;
-    pctx->compression = get_u8(pp); /* warning. 1-byte compression assumption */
-    pp += (complen);
+    
+    if (is_client) {
+        CHECK(pp, 3, pend);
+        str_new(&pctx->client_random, p->random, 32);
+        str_new(&pctx->client_id, p->data, p->len);
+        cipherlen = get_u16(pp);
+        pp += (2 + cipherlen);
+        complen = get_u8(pp);
+        pp += (1 + complen);
+    } else {
+        CHECK(pp, 0, pend);
+        pctx->version = p->version;
+        str_new(&pctx->server_random, p->random, 32);
+        str_new(&pctx->server_id, p->data, p->len);
+        pctx->cipher = htons(get_u16(pp));
+        pp += 2;
+        pctx->compression = get_u8(pp);
+        pp++;
+        mesg("ver: %02x %02x\n",
+             ((unsigned char *)&pctx->version)[0],
+             ((unsigned char *)&pctx->version)[1]);
+        mesg("cip: %02x %02x\n",
+             ((unsigned char *)&pctx->cipher)[0],
+             ((unsigned char *)&pctx->cipher)[1]);
+        mesg("compr: %02x\n", pctx->compression);
+        pctx->ssl_cipher = ssl3_get_cipher_by_char((char *) &pctx->cipher);
+        if (pctx->ssl_cipher == NULL) {
+            mesg ("bad cipher %x\n", pctx->cipher);        
+            return -EINVAL;
+        }
+    }
     CHECK(pp, 0, pend);
     if (pp == pend) { // no extension
-        mesg("%s: no extension", __FUNCTION__);
+        mesg("%s: no extension", hdr);
         return 0;
     }
     extlen = get_u16(pp);
     if (extlen == 0) {
-        mesg("%s: no extension", __FUNCTION__);
+        mesg("%s: no extension", hdr);
         return 0;
     }
     pp += 2;
@@ -460,12 +489,14 @@ static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
     int extnum = 0;
     while (1) {
         uint16_t type = get_u16(pp);
-        mesg("%s: extension type=%d\n", __FUNCTION__, type);
+        mesg("%s: extension type=%d\n", hdr, type);
         
         pp += 2;
         switch (type) {
         case 0: {
             unsigned char *q = pp + 4;
+            if (!is_client)
+                break;
             if (*q++ != 0)
                 break;
             uint16_t snilen = get_u16(q);
@@ -474,64 +505,33 @@ static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
         }
         case 35: {   // session ticket
             uint16_t ticketlen = get_u16(pp);
+            if (!is_client)
+                break;
             str_new(&pctx->client_ticket, pp + 2, ticketlen);
             pctx->flag.client_ticket = 1;
             break;
         }
+        case 0x17:  // EMS
+            if (is_client)
+                pctx->flag.client_ems = 1;
+            else
+                pctx->flag.server_ems = 1;
+            break;
         default:
             break;
         }
         uint16_t l = get_u16(pp);
         CHECK(pp, 2 + l, pend);
-        pp += 2 + l;
+        pp += (2 + l);
         extnum++;
         
         if (pp == pend) {
-            mesg("%s: %d extensions processed\n", __FUNCTION__, extnum);
+            mesg("%s: %d extensions processed\n", hdr, extnum);
             break;
         }
     }
     
     pctx->compression = get_u8(&(p->data[p->len+2]));
-
-    return 0;
-}
-
-static int parse_server_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len) 
-{
-    struct __attribute ((__packed__)) server_hello {
-        uint16_t version;
-        uint8_t  random[32];
-        uint8_t  len;
-        char data[];
-        // opaque seession id + uint16_t cipher + uint8_t compression
-    } *p = (struct server_hello *)buf;
-    extern const SSL_CIPHER *ssl3_get_cipher_by_char(const unsigned char *p);
-    
-    if (len < sizeof(struct server_hello) + p->len + 3)
-        return -EPROTO;
-    pctx->version = p->version;
-    str_new(&pctx->server_id, p->data, p->len);
-    pctx->cipher = htons(get_u16(&(p->data[p->len])));
-    pctx->compression = get_u8(&(p->data[p->len+2]));
-
-    mesg("ver: %02x %02x\n",
-         ((unsigned char *)&pctx->version)[0],
-         ((unsigned char *)&pctx->version)[1]);
-    mesg("cip: %02x %02x\n",
-         ((unsigned char *)&pctx->cipher)[0],
-         ((unsigned char *)&pctx->cipher)[1]);
-    mesg("compr: %02x\n", pctx->compression);
-
-    pctx->server_random.buf = h2o_mem_alloc(32);
-    pctx->server_random.len = 32;
-    memcpy(pctx->server_random.buf, p->random, 32);
-
-    pctx->ssl_cipher = ssl3_get_cipher_by_char((char *) &pctx->cipher);
-    if (pctx->ssl_cipher == NULL) {
-        mesg ("bad cipher %x\n", pctx->cipher);        
-        return -EINVAL;
-    }
 
     return 0;
 }
@@ -567,7 +567,7 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
         if (dir == 1)
             pctx->flag.client_dir = 1;
         
-        if (parse_client_hello(pctx, &buf[4], length) < 0) {
+        if (parse_hello(pctx, &buf[4], length, 1 /* client */) < 0) {
             mesg("%s[TLS handshake] CLIENT_HELLO truncated\n", hdr);
             return EPROTO;
         }
@@ -579,7 +579,7 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
         break;
     case TLS_H_SERVER_HELLO:
         mesg("%s[TLS handshake] SERVER_HELLO        len=%zu\n", hdr, buflen);
-        if (parse_server_hello(pctx, &buf[4], length) < 0) {
+        if (parse_hello(pctx, &buf[4], length, 0 /*server */) < 0) {
             mesg("%s[TLS handshake] SERVER_HELLO truncated\n", hdr);
             return EPROTO;
         }
@@ -745,6 +745,11 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
     int rc = 0, rc2 = 0;
     
     mesg("%s: TLS version %d.%d\n", __FUNCTION__, major, minor);
+
+    if (pctx->flag.server_ems) {
+        mesg("skipping EMS session\n");
+        return -1;
+    }
     
     pctx->ssl_ctx = SSL_CTX_new(SSL_method(major, minor));
     if (!pctx->ssl_ctx) {
