@@ -27,7 +27,7 @@ demo: decrypt
 
 
 %.o: %c $(DEPS) $(OPENSSL_INC)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -std=c99 -o $@ $< $(CFLAGS)
 
 decrypt: main.o memory.o ssl_stub.o util.o
 	$(CC) -o $@ $^ $(CFLAGS) $(OPENSSL_LIB) -lpthread -ldl
