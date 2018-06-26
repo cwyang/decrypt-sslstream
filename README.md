@@ -7,7 +7,7 @@ Copyright (c) 2018 [Chul-Woong Yang](https://github.com/cwyang)
 
 Decrypt captured SSL stream with given private key.
 
-I used memory util of h2o(https://github.com/h2o/).
+Some utility codes (memory, openssl backport) are from h2o(https://github.com/h2o/).
 
 > usage:
 >

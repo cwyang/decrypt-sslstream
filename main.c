@@ -17,6 +17,7 @@
 #include <openssl/pem.h>    // PEM*
 #include <openssl/err.h>    // ERR_*()
 #include <openssl/ssl.h>
+#include <pthread.h>        // PTHREAD_MUTEX
 #include "memory.h"
 #include "ssl_stub.h"
 
@@ -258,7 +259,7 @@ void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx, EVP_PKEY *pkey)
     h2o_buffer_init(&pctx->peer[0].buf, &buffer_prototype);
     h2o_buffer_init(&pctx->peer[1].buf, &buffer_prototype);
     pctx->pkey = pkey;
-    CRYPTO_add(&pkey->references, 1, CRYPTO_LOCK_EVP_PKEY);
+    EVP_PKEY_up_ref(pkey);
 }
 
 void SSL_DECRYPT_CTX_free(SSL_DECRYPT_CTX *pctx) 
@@ -672,7 +673,7 @@ int handshake_cb(SSL *ssl)
 
 static int read_bio(BIO *b, char *out, int len)
 {
-    struct st_ssl_peer *peer = b->ptr;
+    struct st_ssl_peer *peer = BIO_get_data(b);
     h2o_buffer_t *buf = peer->buf;
 
     if (len == 0)
@@ -703,9 +704,9 @@ static long ctrl_bio(BIO *b, int cmd, long num, void *ptr)
 {
     switch (cmd) {
     case BIO_CTRL_GET_CLOSE:
-        return b->shutdown;
+        return BIO_get_shutdown(b);
     case BIO_CTRL_SET_CLOSE:
-        b->shutdown = (int)num;
+        BIO_set_shutdown(b, (int) num);
         return 1;
     case BIO_CTRL_FLUSH:
         return 1;
@@ -713,25 +714,30 @@ static long ctrl_bio(BIO *b, int cmd, long num, void *ptr)
         return 0;
     }
 }
-static int new_bio(BIO *b)
-{
-    b->init = 0;
-    b->num = 0;
-    b->ptr = NULL;
-    b->flags = 0;
-    return 1;
-}
-static int free_bio(BIO *b)
-{
-    return b != NULL;
-}
 static void setup_bio(SSL *ssl, struct st_ssl_peer *peer) 
 {
+    static BIO_METHOD *bio_methods = NULL;
+    if (bio_methods == NULL) {
+        static pthread_mutex_t init_lock = PTHREAD_MUTEX_INITIALIZER;
+        pthread_mutex_lock(&init_lock);
+        if (bio_methods == NULL) {
+            BIO_METHOD *b = BIO_meth_new(BIO_TYPE_FD, "ssl_decrypt");
+            BIO_meth_set_read(b, read_bio);
+            BIO_meth_set_ctrl(b, ctrl_bio);
+            __sync_synchronize();       /* full memory barrier */
+            bio_methods = b;
+        }
+        pthread_mutex_unlock(&init_lock);
+    }
+/*  old style
     static BIO_METHOD bio_methods = {BIO_TYPE_FD, "ssl_decrypt", NULL, read_bio, NULL,
                                      NULL, ctrl_bio, new_bio, free_bio, NULL};
-    BIO *bio = BIO_new(&bio_methods);
-    bio->ptr = peer;
-    bio->init = 1;
+*/
+    BIO *bio = BIO_new(bio_methods);
+    if (bio == NULL)
+        h2o_fatal("malloc");
+    BIO_set_data(bio, peer);
+    BIO_set_init(bio, 1);
     SSL_set_bio(ssl, bio, bio);
 }
 
