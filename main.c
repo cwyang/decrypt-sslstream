@@ -33,15 +33,28 @@ typedef struct st_string {
     int len;
 } str_t;
 
-int str_cmp(str_t s, str_t t) 
+void str_new(str_t *s, char *buf, int len) 
 {
-    if (s.len != t.len) return 1;
-    return strncasecmp(s.buf, t.buf, s.len);
+    s->buf = h2o_mem_alloc(len);
+    s->len = len;
+    memcpy(s->buf, buf, len);
+}
+int str_cmp(str_t *s, str_t *t) 
+{
+    if (s->len != t->len) return 1;
+    return strncasecmp(s->buf, t->buf, s->len);
 }
 void str_free(str_t *s) 
 {
     if (s->buf) free(s->buf);
     s->len = 0;
+}
+
+str_t str_dup(str_t *s) 
+{
+    str_t r;
+    str_new(&r, s->buf, s->len);
+    return r;
 }
 
 void mesg_buf(const char *hdr, char *p, int n) 
@@ -89,7 +102,7 @@ typedef enum enum_state {
     TLS_ST_FINISHED,
     TLS_ST_DONE
 } ssl_state_t;
-    
+
 #define MASTER_SECRET_LEN   48
 typedef struct st_ssl_decrypt_ctx {
     struct st_ssl_peer
@@ -104,15 +117,18 @@ typedef struct st_ssl_decrypt_ctx {
         unsigned        disable:1;
         unsigned        gen_params:1;
         unsigned        client_dir:1;      // dir 0 is client
+        unsigned        client_ticket:1;
+        unsigned        server_ticket:1;
     } flag;
     uint16_t    version;
     uint16_t    cipher;
     uint8_t     compression;            /* XXX: HOW? */
     uint8_t     ready;
-#define READY(x) (x == 7)
+#define READY(x) (x >= 7)
 #define SET_CLIENT_RANDOM(x) do { x |= 1; } while (0)
 #define SET_SERVER_RANDOM(x) do { x |= 2; } while (0)
 #define SET_PMS(x) do { x |= 4; } while (0)
+#define SET_READY(x) do { x |= 8; } while (0)
     str_t       client_random;
     str_t       server_random;
     str_t       client_id;
@@ -121,11 +137,11 @@ typedef struct st_ssl_decrypt_ctx {
     str_t       server_ticket;
     str_t       sni;
     str_t       pms;
-    char        master_secret[MASTER_SECRET_LEN];
+    str_t       master_secret;
+
     EVP_PKEY    *pkey;
-    
-    /* TODO: session resumption */
-    /* TODO: TLS1.3 */
+
+    /* TLS 1.3 does not support RSA. */
     /* TODO: extended master secret */
 } SSL_DECRYPT_CTX;
 
@@ -139,6 +155,8 @@ int decrypt_alert(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
 int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input);
 int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
 static int generate_ssl(SSL_DECRYPT_CTX *pctx);
+static void update_session_cache(SSL_DECRYPT_CTX *pctx);
+static int retrieve_session_cache(SSL_DECRYPT_CTX *pctx);
 
 #define INITIAL_INPUT_BUFFER_SIZE 4096
 h2o_buffer_mmap_settings_t buffer_mmap_settings = {
@@ -223,6 +241,7 @@ void main(int argc, char *argv[])
                 break;
         } while (fp[0] || fp[1]);
         SSL_DECRYPT_CTX_free(&ctx);
+        mesg("-------------------------------------------------\n");
     }
     EVP_PKEY_free(pkey);
     
@@ -250,6 +269,7 @@ void SSL_DECRYPT_CTX_free(SSL_DECRYPT_CTX *pctx)
     str_free(&pctx->client_id);
     str_free(&pctx->server_id);
     str_free(&pctx->pms);
+    str_free(&pctx->master_secret);
     str_free(&pctx->sni);
     if (pctx->pkey) EVP_PKEY_free(pctx->pkey);
 }
@@ -362,17 +382,21 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
     case TLS_R_CHANGE_CIPHER_SPEC:
         mesg("%s[TLS record] CHANGE_CIPHER_SPEC     len=%u\n", hdr, length);
         pctx->peer[dir].state = TLS_ST_CHANGE_CIPHER_SPEC;
-        if (!READY(pctx->ready)) {
-            if (pctx->peer[1-dir].state >= TLS_ST_CHANGE_CIPHER_SPEC) {
-                mesg("%s[TLS record] CHANGE_CIPHER_SPEC     insufficient handshake params, cannot decrypt\n", hdr);
-                return EPROTO;
-            }
+        if (!READY(pctx->ready) && pctx->peer[1-dir].state < TLS_ST_CHANGE_CIPHER_SPEC)
             return EAGAIN;
-        }
         if (pctx->flag.gen_params == 0) {
+            if (!READY(pctx->ready)) {
+                if (retrieve_session_cache(pctx) < 0) {
+                    mesg("%s[TLS record] CHANGE_CIPHER_SPEC     insufficient handshake params, cannot decrypt\n", hdr);
+                    return EPROTO;
+                }
+            }
             generate_ssl(pctx);
             pctx->flag.gen_params = 1;
+            SET_READY(pctx->ready);
         }
+        if (!pctx->flag.client_dir) /* server with NEW_SESSION_TICKET mesg */
+            update_session_cache(pctx);
         break;
     case TLS_R_ALERT:
         if (pctx->peer[dir].state < TLS_ST_CHANGE_CIPHER_SPEC) {
@@ -397,12 +421,6 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
     return rc;
 }
 
-#define PARSE(T, S, LEN) do  {                  \
-        (T).buf = h2o_mem_alloc(LEN);           \
-        (T).len = LEN;                          \
-        memcpy((T).buf, S, LEN);                \
-    } while (0)
-
 static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len) 
 {
     struct __attribute ((__packed__)) client_hello {
@@ -418,8 +436,8 @@ static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
 
 #define CHECK(P,LEN,END) do { if (P+LEN > END) return -EPROTO; } while (0)
     CHECK(pp,0,pend);
-    PARSE(pctx->client_random, p->random, 32);
-    PARSE(pctx->client_id, p->data, p->len);
+    str_new(&pctx->client_random, p->random, 32);
+    str_new(&pctx->client_id, p->data, p->len);
     cipherlen = get_u16(pp);
     CHECK(pp, 3+cipherlen, pend);
     pp += (2 + cipherlen);
@@ -451,12 +469,13 @@ static int parse_client_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
             if (*q++ != 0)
                 break;
             uint16_t snilen = get_u16(q);
-            PARSE(pctx->sni, q + 2, snilen);
+            str_new(&pctx->sni, q + 2, snilen);
             break;
         }
         case 35: {   // session ticket
             uint16_t ticketlen = get_u16(pp);
-            PARSE(pctx->client_ticket, pp + 2, ticketlen);
+            str_new(&pctx->client_ticket, pp + 2, ticketlen);
+            pctx->flag.client_ticket = 1;
             break;
         }
         default:
@@ -492,7 +511,7 @@ static int parse_server_hello(SSL_DECRYPT_CTX *pctx, char *buf, uint32_t len)
     if (len < sizeof(struct server_hello) + p->len + 3)
         return -EPROTO;
     pctx->version = p->version;
-    PARSE(pctx->server_id, p->data, p->len);
+    str_new(&pctx->server_id, p->data, p->len);
     pctx->cipher = htons(get_u16(&(p->data[p->len])));
     pctx->compression = get_u8(&(p->data[p->len+2]));
 
@@ -603,6 +622,7 @@ int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen)
         }
         extract_payload(&buf[8], length-4, 2, tlen, &pctx->server_ticket);
         mesg_buf("server-ticket", pctx->server_ticket.buf, pctx->server_ticket.len);
+        pctx->flag.server_ticket = 1;
         break;
     }
     case TLS_H_FINISHED:
@@ -771,25 +791,37 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
             cipher_dir = SSL3_CHANGE_CIPHER_CLIENT_READ;
         else
             cipher_dir = SSL3_CHANGE_CIPHER_SERVER_READ;
-        
+
         if (minor) { // TLS
-            ss->master_key_length =
-                tls1_generate_master_secret(s,
-                                            ss->master_key,
-                                            pctx->pms.buf + 2,
-                                            pctx->pms.len);
+            if (pctx->master_secret.len == MASTER_SECRET_LEN) {
+                memcpy(ss->master_key, pctx->master_secret.buf, MASTER_SECRET_LEN);
+                ss->master_key_length = MASTER_SECRET_LEN;
+                
+            } else {
+                ss->master_key_length =
+                    tls1_generate_master_secret(s,
+                                                ss->master_key,
+                                                pctx->pms.buf + 2,
+                                                pctx->pms.len);
+            }
             rc = tls1_setup_key_block(s);
             rc2 = tls1_change_cipher_state(s, cipher_dir);
         } else {
-            ss->master_key_length =
-                ssl3_generate_master_secret(s,
-                                            ss->master_key,
-                                            pctx->pms.buf + 2,
-                                            pctx->pms.len);
+            if (pctx->master_secret.len) {
+                memcpy(ss->master_key, pctx->master_secret.buf, MASTER_SECRET_LEN);
+                ss->master_key_length = MASTER_SECRET_LEN;
+            } else {
+                ss->master_key_length =
+                    ssl3_generate_master_secret(s,
+                                                ss->master_key,
+                                                pctx->pms.buf + 2,
+                                                pctx->pms.len);
+            }
             rc = ssl3_setup_key_block(s);
             rc2 = ssl3_change_cipher_state(s, cipher_dir);
         }
         mesg_buf("master-key", ss->master_key, ss->master_key_length);
+        str_new(&pctx->master_secret, ss->master_key, ss->master_key_length);
         
         if (rc == 0 || rc2 == 0) {
             mesg("%s: setup_key_block failed (%d, %d)\n", __FUNCTION__, rc, rc2);
@@ -802,6 +834,64 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
 error:
     return -1;
 #endif
+}
+
+// temporary check
+str_t prev_key;
+str_t prev_val;
+
+void cache_put(str_t *k, str_t *v) 
+{
+    prev_key = str_dup(k);
+    prev_val = str_dup(v);
+}
+int cache_get(str_t *k, str_t *v) 
+{
+    if (str_cmp(&prev_key, k) != 0) {
+        return -1;
+    }
+    *v = prev_val;
+    return 0;
+}
+
+
+static int retrieve_session_cache(SSL_DECRYPT_CTX *pctx) 
+{
+    // RFC5077 3.4
+    if (pctx->client_id.len == 0)
+        return -1;
+    
+    if (str_cmp(&pctx->client_id, &pctx->server_id))
+        return -1;
+    
+    if (pctx->flag.client_ticket) {
+        if (cache_get(&pctx->client_ticket, &pctx->master_secret) < 0)
+            return -1;
+        mesg("Ticket-HIT\n");
+    } else if (pctx->client_id.len) {
+        if (cache_get(&pctx->client_id, &pctx->master_secret) < 0)
+            return -1;
+        mesg("ID-Hit\n");
+    } else {
+        return -1;
+    }
+    
+    return 0;
+}
+
+static void update_session_cache(SSL_DECRYPT_CTX *pctx) 
+{
+    // RFC5077 3.4
+    if (pctx->flag.server_ticket) {    // we should discards session id
+        // store ticket-key
+        cache_put(&pctx->server_ticket, &pctx->master_secret);
+        return;
+    }
+    if (pctx->server_id.len) {
+        // store id-key
+        cache_put(&pctx->server_id, &pctx->master_secret);
+        return;
+    }
 }
 
 static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls, int type)
