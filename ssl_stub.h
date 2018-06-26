@@ -13,7 +13,7 @@ void init_library(void);
 extern int check_rsa (const SSL_CIPHER *cipher);
 extern const SSL_METHOD *SSL_method(uint8_t major, uint8_t minor);
 
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL  /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x10101007L && NOT_LIBRESSL /* >= 1.1.1-pre7 */
 #include <ssl_locl.h>
 /* nothing yet */
 /* from t1_enc.c */
@@ -24,6 +24,8 @@ extern int tls1_generate_master_secret(SSL *s, unsigned char *out,
 extern int ssl3_generate_master_secret(SSL *s, unsigned char *out,
                                        unsigned char *p, size_t len,
                                        size_t *secret_size);
+#elif OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL  /* >= 1.1.0.a */
+#include <ssl_locl.h>
 #else
 extern RSA *EVP_PKEY_get0_RSA(EVP_PKEY *pkey);
 #define EVP_PKEY_up_ref(pkey) CRYPTO_add(&(pkey)->references, 1, CRYPTO_LOCK_EVP_PKEY)

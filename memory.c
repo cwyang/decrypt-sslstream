@@ -19,6 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#define _BSD_SOURCE
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -28,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <alloca.h>
 #include <unistd.h>
 #include "memory.h"
 

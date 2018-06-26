@@ -9,6 +9,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 #include <errno.h>          // ENOMEM,..
 #include <arpa/inet.h>      // ntohl()
 #include <openssl/crypto.h> // EVP_PKEY

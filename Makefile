@@ -3,12 +3,19 @@ OPENSSL102=$(wildcard ~/.openssl/openssl-1.0.2o)
 OPENSSL110=$(wildcard ~/.openssl/openssl-1.1.0h)
 OPENSSL111=$(wildcard ~/.openssl/openssl-1.1.1-pre7)
 
-OPENSSL=$(OPENSSL101)
-OPENSSL_INC=$(OPENSSL)/include
+X=$(wildcard ~/openssl/openssl-1.1.0h)
+#X=$(wildcard ~/openssl/openssl-1.1.1-pre7)
+
+OPENSSL=$(OPENSSL102)
+OPENSSL_INC=-I$(OPENSSL)/include
+#OPENSSL_INC=-I$(X) -I$(X)/include -I$(X)/ssl
 OPENSSL_LIB=$(OPENSSL)/lib/libssl.a $(OPENSSL)/lib/libcrypto.a
 
+GCOV_CCFLAGS = -fprofile-arcs -ftest-coverage
+GCOV_OUTPUT = *.gcda *.gcno *.gcov 
+
 CC=gcc
-CFLAGS=-I$(OPENSSL_INC) -g
+CFLAGS=$(OPENSSL_INC) -g $(GCOV_CCFLAGS) -std=c99
 DEPS=
 
 all: decrypt
@@ -27,7 +34,7 @@ demo: decrypt
 
 
 %.o: %c $(DEPS) $(OPENSSL_INC)
-	$(CC) -c -std=c99 -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 decrypt: main.o memory.o ssl_stub.o util.o
 	$(CC) -o $@ $^ $(CFLAGS) $(OPENSSL_LIB) -lpthread -ldl

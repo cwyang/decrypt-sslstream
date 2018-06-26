@@ -6,6 +6,10 @@
 #include <openssl/ssl.h>
 #include "ssl_stub.h"
 
+#define str(s) xstr(s)
+#define xstr(s) #s
+#pragma message ("openssl version=" str(OPENSSL_VERSION_NUMBER))
+
 /*
   OPENSSL_VERSION_NUMBER  0x1 00 01 15 fL  // 1.0.1u
   OPENSSL_VERSION_NUMBER  0x1 00 02 0f fL  // 1.0.2o
@@ -125,7 +129,7 @@ void my_ssl_clear_state(SSL *s)
 int my_tls1_generate_master_secret(SSL *s, unsigned char *out,
                                    unsigned char *p, int len) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x10101007L && NOT_LIBRESSL /* >= 1.1.1-pre7 */
     size_t secret_len = 0;
     if (tls1_generate_master_secret(s, out, p, len, &secret_len) != 1)
         return -1;
@@ -138,7 +142,7 @@ int my_tls1_generate_master_secret(SSL *s, unsigned char *out,
 int my_ssl3_generate_master_secret(SSL *s, unsigned char *out,
                                    unsigned char *p, int len) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x10101007L && NOT_LIBRESSL /* >= 1.1.1-pre7 */
     size_t secret_len = 0;
     if (ssl3_generate_master_secret(s, out, p, len, &secret_len) != 1)
         return -1;
