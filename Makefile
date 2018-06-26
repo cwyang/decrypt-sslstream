@@ -11,6 +11,7 @@ OPENSSL_INC=-I$(OPENSSL)/include
 #OPENSSL_INC=-I$(X) -I$(X)/include -I$(X)/ssl
 OPENSSL_LIB=$(OPENSSL)/lib/libssl.a $(OPENSSL)/lib/libcrypto.a
 
+OPENSSL_LIB_TRAVIS=/usr/lib/x86_64-linux-gnu/libssl.a /usr/lib/x86_64-linux-gnu/libcrypto.a
 GCOV_CCFLAGS = -fprofile-arcs -ftest-coverage
 GCOV_OUTPUT = *.gcda *.gcno *.gcov 
 
@@ -38,5 +39,12 @@ demo: decrypt
 
 decrypt: main.o memory.o ssl_stub.o util.o
 	$(CC) -o $@ $^ $(CFLAGS) $(OPENSSL_LIB) -lpthread -ldl
+
+travis-check: decrypt-check
+	./decrypt-check samples/somin_tmp2k.pem samples/c1 samples/s1 samples/c2 samples/s2 samples/c3 samples/s3 samples/c4 samples/s4
+
+decrypt-check: main.o memory.o ssl_stub.o util.o
+	$(CC) -o $@ $^ $(CFLAGS) $(OPENSSL_LIB_TRAVIS) -lpthread -ldl
+
 clean:
-	rm -f *.o decrypt
+	rm -f *.o decrypt decrypt-check
