@@ -1,4 +1,5 @@
 decrypt-sslstream
+[![Build Status](https://travis-ci.org/cwyang/decrypt-sslstream.svg?branch=master)](https://travis-ci.org/cwyang/decrypt-sslstream) [![Coverage Status](https://img.shields.io/codecov/c/github/cwyang/decrypt-sslstream.svg)](https://codecov.io/gh/cwyang/decrypt-sslstream)
 ===
 
 Copyright (c) 2018 [Chul-Woong Yang](https://github.com/cwyang)
