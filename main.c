@@ -741,6 +741,14 @@ static void setup_bio(SSL *ssl, struct st_ssl_peer *peer)
     SSL_set_bio(ssl, bio, bio);
 }
 
+static void ssl_info_cb(const SSL *ssl, int where, int ret)
+{
+    if (where & SSL_CB_ALERT == 0)
+        return;
+    uint16_t alert = htons((uint16_t)ret);
+    mesg_buf("alert", (char *)&alert, 2);
+}
+   
 static int generate_ssl(SSL_DECRYPT_CTX *pctx) 
 {
 #if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
@@ -760,7 +768,9 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
     pctx->ssl_ctx = SSL_CTX_new(SSL_method(major, minor));
     if (!pctx->ssl_ctx) {
         print_ssl_error();
+        goto error;
     }
+	SSL_CTX_set_info_callback(pctx->ssl_ctx, ssl_info_cb);
 
     for (int i = 0; i < 2; i ++) {
         SSL *s = SSL_new(pctx->ssl_ctx);
@@ -778,20 +788,6 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
 
         setup_bio(s, &pctx->peer[i]);
         
-        /* from ssl_session.c */
-        extern int ssl_get_new_session(SSL *s, int session);
-        /* from t1_enc.c */
-        extern int tls1_generate_master_secret(SSL *s, unsigned char *out,
-                                               unsigned char *p, int len);
-        extern int tls1_setup_key_block(SSL *s);
-        extern int tls1_change_cipher_state(SSL *s, int which);
-        
-        /* from s3_enc.c */
-        extern int ssl3_generate_master_secret(SSL *s, unsigned char *out,
-                                               unsigned char *p, int len);        
-        extern int ssl3_setup_key_block(SSL *s);
-        extern int ssl3_change_cipher_state(SSL *s, int which);
-
         ssl_get_new_session(s, 0);
         SSL_SESSION *ss = SSL_get0_session(s);
         ss->cipher = pctx->ssl_cipher;
@@ -837,6 +833,7 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
         if (rc == 0 || rc2 == 0) {
             mesg("%s: setup_key_block failed (%d, %d)\n", __FUNCTION__, rc, rc2);
             print_ssl_error();
+            goto error;
         } else
             mesg("%s: setup_key_block ok\n", __FUNCTION__);        
     }
@@ -913,16 +910,16 @@ static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_t
     mesg("%s: buf_ptr = %p, buf_len=%zu\n", __FUNCTION__, *_input, (*_input)->size);
 
     switch(type) {
-    case TLS_R_HANDSHAKE:
-        n = ssl->method->ssl_read_bytes(ssl, SSL3_RT_HANDSHAKE, buf, 2048, 0);
+    case TLS_R_HANDSHAKE: 
+        n = ssl3_read_bytes(ssl, SSL3_RT_HANDSHAKE, buf, 2048, 0);  /* no DTLS */
         break;
     case TLS_R_ALERT:
-        n = ssl->method->ssl_read_bytes(ssl, SSL3_RT_APPLICATION_DATA, buf, 2048, 0);
+        n = ssl3_read_bytes(ssl, SSL3_RT_APPLICATION_DATA, buf, 2048, 0);   /* no DTLS */
         if (n == 0) { // valid alert
-            char buf[2];
-            buf[0] = ssl->s3->alert_fragment[0];
-            buf[1] = ssl->s3->alert_fragment[1];
-            mesg_buf("alert", buf, 2);
+            /* char buf[2]; */
+            /* buf[0] = ssl->s3->alert_fragment[0]; // alert_level */
+            /* buf[1] = ssl->s3->alert_fragment[1]; */
+            /* mesg_buf("alert", buf, 2); */
             return 0;
         }
         
