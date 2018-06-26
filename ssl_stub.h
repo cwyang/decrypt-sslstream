@@ -6,11 +6,14 @@
 #ifndef SSL_STUB_H
 #define SSL_STUB_H
 #include <stdint.h>
+#define IS_LIBRESSL (!defined(LIBRESSL_VERSION_NUMBER))
+#define NOT_LIBRESSL (!defined(LIBRESSL_VERSION_NUMBER))
+
 void init_library(void);
 extern int check_rsa (const SSL_CIPHER *cipher);
 extern const SSL_METHOD *SSL_method(uint8_t major, uint8_t minor);
 
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL  /* >= 1.1.0.a */
 #include <ssl_locl.h>
 /* nothing yet */
 /* from t1_enc.c */
@@ -67,5 +70,6 @@ extern int my_tls1_generate_master_secret(SSL *s, unsigned char *out,
                                           unsigned char *p, int len);
 extern int my_ssl3_generate_master_secret(SSL *s, unsigned char *out,
                                           unsigned char *p, int len);        
+extern void my_ssl_session_set_compress_meth(SSL_SESSION *ss, int c);
 #endif
 

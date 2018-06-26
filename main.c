@@ -789,8 +789,8 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
         ssl_get_new_session(s, 0);
         SSL_SESSION *ss = SSL_get0_session(s);
         ss->cipher = pctx->ssl_cipher;
-        ss->compress_meth = 0;              /*  how to handle properly? */
-        
+        my_ssl_session_set_compress_meth(ss, 0);     /* right? */
+
         int cipher_dir;
         if (i != pctx->flag.client_dir)
             cipher_dir = SSL3_CHANGE_CIPHER_CLIENT_READ;

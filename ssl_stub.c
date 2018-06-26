@@ -13,8 +13,7 @@
   OPENSSL_VERSION_NUMBER  0x1 01 01 00 7L  // 1.1.1-pre7
 */
 
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
-#warning This program does not support OpenSSL version >= 1.1.0 */
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
 void init_library(void) 
 {
     OPENSSL_init_ssl(0, NULL);
@@ -93,7 +92,7 @@ RSA *EVP_PKEY_get0_RSA(EVP_PKEY *pkey)
 
 int my_ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x10101007L /* >= 1.1.1-pre7 */
+#if OPENSSL_VERSION_NUMBER >= 0x10101007L && NOT_LIBRESSL /* >= 1.1.1-pre7 */
     /* from record_layer_s3.c */
     extern int ssl3_read_bytes(SSL *s, int type, int *recvd_type,
                                unsigned char *buf, size_t len, int peek, size_t *readbytes);
@@ -103,7 +102,7 @@ int my_ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
     if ((n = ssl3_read_bytes(s, type, (int *)NULL, buf, len, peek, &rb)) != 1)
         return -1;
     return rb;
-#elif OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#elif OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
     /* from record_layer_s3.c */
     extern int ssl3_read_bytes(SSL *s, int type, int *recvd_type, unsigned char *buf, int len, int peek);
     return ssl3_read_bytes(s, type, (int *)NULL, buf, len, peek);
@@ -116,7 +115,7 @@ int my_ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
 
 void my_ssl_clear_state(SSL *s) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
     s->statem.hand_state = TLS_ST_OK;
 #else
     s->state = SSL_ST_OK;
@@ -126,7 +125,7 @@ void my_ssl_clear_state(SSL *s)
 int my_tls1_generate_master_secret(SSL *s, unsigned char *out,
                                    unsigned char *p, int len) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
     size_t secret_len = 0;
     if (tls1_generate_master_secret(s, out, p, len, &secret_len) != 1)
         return -1;
@@ -139,13 +138,20 @@ int my_tls1_generate_master_secret(SSL *s, unsigned char *out,
 int my_ssl3_generate_master_secret(SSL *s, unsigned char *out,
                                    unsigned char *p, int len) 
 {
-#if OPENSSL_VERSION_NUMBER >= 0x1010001fL /* >= 1.1.0.a */
+#if OPENSSL_VERSION_NUMBER >= 0x1010001fL && NOT_LIBRESSL /* >= 1.1.0.a */
     size_t secret_len = 0;
     if (ssl3_generate_master_secret(s, out, p, len, &secret_len) != 1)
         return -1;
     return secret_len;
 #else
     return ssl3_generate_master_secret(s, out, p, len);
+#endif
+}
+
+void my_ssl_session_set_compress_meth(SSL_SESSION *ss, int c) 
+{
+#if NOT_LIBRESSL  /* openssl */
+    ss->compress_meth = c;
 #endif
 }
 
