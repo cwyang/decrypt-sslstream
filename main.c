@@ -109,6 +109,8 @@ typedef enum enum_state {
     TLS_ST_DONE
 } ssl_state_t;
 
+typedef int (*ssl_decrypt_callback_t)(void *cbarg, const char *plain_msg, size_t len, int is_rev);
+
 #define MASTER_SECRET_LEN   48
 typedef struct st_ssl_decrypt_ctx {
     struct st_ssl_peer
@@ -148,15 +150,18 @@ typedef struct st_ssl_decrypt_ctx {
     str_t       master_secret;
 
     EVP_PKEY    *pkey;
+
+    ssl_decrypt_callback_t  decrypt_cb;
+    void        *cb_arg;
 } SSL_DECRYPT_CTX;
 
-void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx, EVP_PKEY *pkey);
+void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx, EVP_PKEY *pkey, ssl_decrypt_callback_t decrypt_cb, void *cb_arg);
 void SSL_DECRYPT_CTX_free(SSL_DECRYPT_CTX *pctx);
 int decrypt_pms(SSL_DECRYPT_CTX *pctx) ;
 int decrypt(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
-int decrypt_record(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
-int decrypt_handshake(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
-int decrypt_alert(SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
+int decrypt_record(SSL_DECRYPT_CTX *pctx, int dir, SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
+int decrypt_handshake(SSL_DECRYPT_CTX *pctx, int dir, SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
+int decrypt_alert(SSL_DECRYPT_CTX *pctx, int dir, SSL *ssl, h2o_buffer_t **buf, size_t buflen, int is_tls);
 int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input);
 int do_handshake(SSL_DECRYPT_CTX *pctx, int dir, char *buf, size_t buflen);
 static int generate_ssl(SSL_DECRYPT_CTX *pctx);
@@ -173,6 +178,22 @@ __thread h2o_buffer_prototype_t buffer_prototype = {
     {INITIAL_INPUT_BUFFER_SIZE * 2}, /* minimum initial capacity */
     &buffer_mmap_settings
 };
+
+static int test_cb(void *dummy, const char *plain_msg, size_t len,int is_rev)  
+{
+    static int cnt = 0;
+
+    if (cnt++ >= 4) {
+        mesg("--- %s ---\n", is_rev ? "RESP" : "REQ");
+        mesg("simulated error\n");
+        return -1;
+    }
+    
+    mesg("--- %s ---\n", is_rev ? "RESP" : "REQ");
+    mesg_buf("record", (char *) plain_msg, len);
+    return 0;
+}
+
 
 static EVP_PKEY *load_private_key(char *pem_file) 
 {
@@ -198,7 +219,7 @@ static EVP_PKEY *load_private_key(char *pem_file)
     return pkey;
 }
 
-void main(int argc, char *argv[]) 
+int main(int argc, char *argv[]) 
 {
     char buf[READ_CHUNK];
     size_t n;
@@ -218,7 +239,7 @@ void main(int argc, char *argv[])
     pkey = load_private_key(argv[1]);
 
     for (int k = 0; k < argn - 1; k += 2) {
-        SSL_DECRYPT_CTX_init(&ctx, pkey);
+        SSL_DECRYPT_CTX_init(&ctx, pkey, NULL, NULL);
         
         fp[0] = fopen(argv[2+k], "rb");
         fp[1] = fopen(argv[3+k], "rb");
@@ -249,16 +270,19 @@ void main(int argc, char *argv[])
         mesg("-------------------------------------------------\n");
     }
     EVP_PKEY_free(pkey);
-    
+    return 0; 
 }
 
-void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx, EVP_PKEY *pkey) 
+void SSL_DECRYPT_CTX_init(SSL_DECRYPT_CTX *pctx, EVP_PKEY *pkey,
+                          ssl_decrypt_callback_t decrypt_cb, void *cb_arg)
 {
     *pctx = (SSL_DECRYPT_CTX) {};
     
     h2o_buffer_init(&pctx->peer[0].buf, &buffer_prototype);
     h2o_buffer_init(&pctx->peer[1].buf, &buffer_prototype);
     pctx->pkey = pkey;
+    pctx->decrypt_cb = decrypt_cb;
+    pctx->cb_arg = cb_arg;
     EVP_PKEY_up_ref(pkey);
 }
 
@@ -360,17 +384,20 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
             break;
         }
         
-        rc = decrypt_record(pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
+        rc = decrypt_record(pctx, dir, 
+                            pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
         if (rc < 0) {
             mesg("%s[TLS record] decrypt record error %d\n", hdr, rc);
-            rc = EINVAL;
+            if (rc != -EPIPE)
+                rc = EINVAL;
         }
         return rc;
     case TLS_R_HANDSHAKE:
         if (pctx->peer[dir].state >= TLS_ST_CHANGE_CIPHER_SPEC) {
             // encrypted handshake,
             mesg("%s[TLS record] encrypted handshake    len=%u\n", hdr, length);
-            rc = decrypt_handshake(pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
+            rc = decrypt_handshake(pctx, dir,
+                                   pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
             if (rc < 0) {
                 mesg("%s[TLS record] decrypt handshake error %d\n", hdr, rc);
                 rc = EINVAL;
@@ -413,7 +440,8 @@ int statem(SSL_DECRYPT_CTX *pctx, int dir, h2o_buffer_t **_input)
         }
         // encrypted alert
         mesg("%s[TLS record] encrypted alert        len=%u\n", hdr, length);
-        rc = decrypt_alert(pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
+        rc = decrypt_alert(pctx, dir,
+                           pctx->peer[dir].ssl, &pctx->peer[dir].buf, length, minor ? 1 : 0);
         if (rc < 0) {
             mesg("%s[TLS record] decrypt alert error %d\n", hdr, rc);
             rc = EINVAL;
@@ -900,7 +928,8 @@ static void update_session_cache(SSL_DECRYPT_CTX *pctx)
     }
 }
 
-static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls, int type)
+static int _decrypt_record(SSL_DECRYPT_CTX *pctx, int dir, 
+                           SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls, int type)
 {
     char buf[2048];
     int n;
@@ -931,20 +960,30 @@ static int _decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_t
         break;
     }
 
-    mesg_buf("record", buf, n);
+    if (type == TLS_R_APPLICATION_DATA && pctx->decrypt_cb) {
+        int r = pctx->decrypt_cb(pctx->cb_arg, buf, n, 
+                                 (dir == pctx->flag.client_dir) ? 0 : 1);
+        if (r < 0) {    // session error
+            return -EPIPE;
+        }
+    } else
+        mesg_buf("record", buf, n);
     
     return n <= 0 ? n : 0;
 }
 
-int decrypt_record(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
+int decrypt_record(SSL_DECRYPT_CTX *pctx, int dir,
+                   SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
 {
-    return _decrypt_record(ssl, _input, len, is_tls, TLS_R_APPLICATION_DATA);
+    return _decrypt_record(pctx, dir, ssl, _input, len, is_tls, TLS_R_APPLICATION_DATA);
 }
-int decrypt_handshake(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
+int decrypt_handshake(SSL_DECRYPT_CTX *pctx, int dir,
+                      SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
 {
-    return _decrypt_record(ssl, _input, len, is_tls, TLS_R_HANDSHAKE);
+    return _decrypt_record(pctx, dir, ssl, _input, len, is_tls, TLS_R_HANDSHAKE);
 }
-int decrypt_alert(SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
+int decrypt_alert(SSL_DECRYPT_CTX *pctx, int dir,
+                  SSL *ssl, h2o_buffer_t **_input, size_t len, int is_tls)  
 {
-    return _decrypt_record(ssl, _input, len, is_tls, TLS_R_ALERT);
+    return _decrypt_record(pctx, dir, ssl, _input, len, is_tls, TLS_R_ALERT);
 }
