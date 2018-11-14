@@ -300,6 +300,8 @@ void SSL_DECRYPT_CTX_free(SSL_DECRYPT_CTX *pctx)
     str_free(&pctx->pms);
     str_free(&pctx->master_secret);
     str_free(&pctx->sni);
+    str_free(&pctx->client_ticket);
+    str_free(&pctx->server_ticket);
     if (pctx->pkey) EVP_PKEY_free(pctx->pkey);
 }
 
@@ -855,9 +857,12 @@ static int generate_ssl(SSL_DECRYPT_CTX *pctx)
             rc2 = ssl3_change_cipher_state(s, cipher_dir);
         }
         mesg_buf("master-key", ss->master_key, ss->master_key_length);
-        str_new(&pctx->master_secret, ss->master_key, ss->master_key_length);
+        if (pctx->master_secret.buf == NULL)
+            str_new(&pctx->master_secret, ss->master_key, ss->master_key_length);
         
-        if (rc == 0 || rc2 == 0) {
+        if (rc == 0 ||
+            rc2 == 0 ||
+            ss->master_key_length <= 0) {
             mesg("%s: setup_key_block failed (%d, %d)\n", __FUNCTION__, rc, rc2);
             print_ssl_error();
             goto error;
