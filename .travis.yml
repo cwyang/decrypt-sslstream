@@ -1,10 +1,20 @@
 language:
- - gcc
- - clang
+- gcc
+- clang
 before_install:
- - pip install --user cpp-coveralls # --use-mirrors
- - sudo apt-get install valgrind
+- pip install --user cpp-coveralls
+- sudo apt-get install valgrind
+
+addons:
+  sonarcloud:
+    organization: "cwyang"
+    token:
+      secure: a6KNEdg+teJMQSgI0CP+SWQnz4E/VvW2Yj9FSU4mzA0y1MUSXTDwMiDzer47j39ZWidaf//t/vQkzGf0nL5BzncF9VKtx+vGfQUuRQEjLvF/E7SV+qPeaHbcSkjXTLvrYnd1UtfZNhvB/xPnal2VDW9UOIKUBgfVZ9AUGFoa2OwIzt1RKszUJ91pOzb90gXLYExLpJ2OlAgl36h8BDr1KPTbsPaNLF+D51JL5tU1iOD/DKOvqBG85O0q22TzihxbUgE+Tmo36OcLzGbiO95iv3/Bt+3RYVrEnkJQzTEIjJibMvLUSaVD/aIoPcBQgLZS2iny61M1Zp5fhQcbgRVN1r9+rm99X061JSgKhXAqGFWTeBgtP1se4DKH9/a9bxHfn0qnuzNPWJNXlZs9XCbuJWwwuW4jGBD2iiiESbB+lMBrMdkCO9cVb453lLfvv7llUg5KGrVAmLdfmXYal7QrybZumudY5/DhVvHy//W8xgofmwtvviPEP7DP8DVgKxuJ5ssaOcKos5WSaqcln2KkgNw2H5KaoquIw84RtvKePrymsm5wJsmpVFPhnUp+SbWs5o7Vqo6vOfQ1qzUfzyNMpbDdEOeTWueD/DE6YAFTdNr2Q6YvYF1QyFkTs0zx6Q9/k+K0MtIP/e+9H0NpJzzEZFdFU3Xp+OlKVBGwhAXtgoQ=
+
 script:
- - make travis-check
+        #- make travis-check
+- build-wrapper-linux-x86-64 --out-dir bw-output make travis-check
+- sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output   
+
 after_success:
- - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
